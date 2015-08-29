@@ -1,0 +1,72 @@
+; This is a template for creating program headers that PAULMON2 can
+; recognize.  Using this header, you can make your programs appear
+; in the "Run" command's menu and/or make your programs run automatically
+; when the system is reset (useful if you put your code in non-volatile
+; memory).  You can also make programs which are plug-in commands to
+; PAULMON2, either adding new fuctionality or replacing the built-in
+; commands with your own customized versions.
+
+.equ    locat, 0x8000     ;Location for this program
+
+.org	locat
+.db	0xA5,0xE5,0xE0,0xA5	;signiture bytes
+.db	35,255,0,0		;id (35=prog, 249=init, 253=startup, 254=cmd)
+.db	0,0,0,0			;prompt code vector
+.db	0,0,0,0			;reserved
+.db	0,0,0,0			;reserved
+.db	0,0,0,0			;reserved
+.db	0,0,0,0			;user defined
+.db	255,255,255,255		;length and checksum (255=unused)
+.db	"Program Name",0
+.org	locat+64                ;executable code begins here
+
+; PAULMON2 will only recognize this header if it begin on a 256-byte
+; page boundry.  PAULMON2 can be configured to avoid seaching certain
+; ranges of memory, if your copy of PAULMON2 is configured this way
+; remember to write your programs/commands in areas where it is allowed
+; to scan for them.
+
+; To create ordinary programs (that show up in the R command's list),
+; just use these lines as they are, but change the string to the
+; name of your program.
+
+; If your program is stored in non-volatile memory, you can switch
+; the 35 byte to 253 and PAULMON2 will automatically run your program
+; when it starts up.  If your program hasn't changed the stack pointer,
+; it can just terminate in a RET instruction and PAULMON2 will start
+; up normally.
+
+; To create plug-in commands for PAULMON2, change the 35 to 254.  The
+; keystroak that is to run your command much be specified in place of
+; the 255 byte, for example:
+
+; .db     254,'W',0,0		;a new command assigned to the 'W' key
+
+; if the key is a letter, it must be uppercase.  If you use a key which
+; conflicts with the built-in commands, your new command will override
+; the built-in one... so be careful.
+
+; When PAULMON2 runs your plug-in command, R6 & R7 will contain the
+; value of the memory pointer, which you can change if you like.  When
+; your command is finished, it should terminate in a RET instruction.
+; If the stack pointer is different from what it what when PAULMON2
+; called your command, you will almost certainly crash the machine.
+; Apart from SP, R6, and R7, and the return value on the stack, you
+; may use whatever memory you need.  If your command needs to store
+; data to be used next time it is run, 08-0F and 20-2F are areas which
+; PAULMON2 (in it's default configuration) will not use.
+
+; The "prompt code vector" is a feature where programs or commands in
+; memory have an opportunity to run and add some text to the prompt
+; that PAULMON2 prints before accepting each new command.  The first
+; two bytes must be 165 and 100, and the second two are the actual
+; location PAULMON2 should call.  If your prompt modifing code crashes
+; or doesn't return properly, PAULMON2 will not work, so be careful
+; when using this feature, particularily if downloading to non-volatile
+; memory!
+
+; If you create nifty plug-in commands, please consider contributing
+; them to other users.  Email paul@ece.orst.edu about getting your
+; plug-in commans on the PAULMON2 web page.
+
+
