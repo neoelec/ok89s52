@@ -32,10 +32,10 @@ void main(void)
 
     T2CON = 0x04;                               // Timer 2, 16-bit auto-reload mode
     T2MOD = 0x00;                               // (up counter)
-    RCAP2H = (0 - 50000) >> 8;                  // initialize time constant
-    RCAP2L = (0 - 50000) & 0x00FF;              // (24MHz/12/50000 = 40Hz)
-    TH2 = (0 - 50000) >> 8;                     // initial Timer 2 value
-    TL2 = (0 - 50000) & 0x00FF;
+    RCAP2H = (uint8_t)((0 - 50000) >> 8);       // initialize time constant
+    RCAP2L = (uint8_t)((0 - 50000) & 0x00FF);   // (24MHz/12/50000 = 40Hz)
+    TH2 = (uint8_t)((0 - 50000) >> 8);          // initial Timer 2 value
+    TL2 = (uint8_t)((0 - 50000) & 0x00FF);
     IP = 0x20;                                  // interrupt priority
     IE = 0xA0;                                  // EA=ET2=1
 

@@ -46,8 +46,8 @@ static void LCD_3d2(uint16_t number)
 
 static void TF0_ISR(void) __interrupt 1         /* Timer 0 int. service routine */
 {
-    TH0 = (0 - 20000) >> 8;                     // initial Timer 0 value
-    TL0 = (0 - 20000) & 0x00FF;                 // (24MHz/12/20000 = 100Hz)
+    TH0 = (uint8_t)((0 - 20000) >> 8);          // initial Timer 0 value
+    TL0 = (uint8_t)((0 - 20000) & 0x00FF);      // (24MHz/12/20000 = 100Hz)
 
     time++;                                     // increment interrupt counter
     LCD_command(0xC2);                          // display stop watch time
@@ -75,8 +75,8 @@ void main(void)
                 break;                          // if KEY1, start
             TMOD = 0x01;                        // Timer 0, mode 1
             TCON = 0x10;                        // TR0=1
-            TH0 = (0 - 20000) >> 8;             // initial Timer 0 value
-            TL0 = (0 - 20000) & 0x00FF;         // (24MHz/12/20000 = 100Hz)
+            TH0 = (uint8_t)((0 - 20000) >> 8);           // initial Timer 0 value
+            TL0 = (uint8_t)((0 - 20000) & 0x00FF);      // (24MHz/12/20000 = 100Hz)
             IP = 0x02;                          // interrupt priority
             IE = 0x82;                          // EA=ET0=1
             DIG_SELECT = 0x01;                  // LED1 on

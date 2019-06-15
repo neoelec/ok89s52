@@ -42,8 +42,8 @@ void main(void)
 
     TMOD = 0x02;                                // Timer 0, mode 2
     TCON = 0x10;                                // TR0=1
-    TH0 = 0 - 100;                              // initialize time constant
-    TL0 = 0 - 100;                              // (24MHz/12/100 = 20kHz)
+    TH0 = (uint8_t)((0 - 100) & 0x00FF);        // initialize time constant
+    TL0 = (uint8_t)((0 - 100) & 0x00FF);        // (24MHz/12/100 = 20kHz)
     IP = 0x02;                                  // interrupt priority
     IE = 0x82;                                  // EA=ET0=1
 

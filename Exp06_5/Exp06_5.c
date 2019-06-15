@@ -60,7 +60,7 @@ void main(void)
         LCD_string(0x80, " signed 10011101");   // display title
         LCD_string(0xC0, " >> 0 = 00000000");
 
-        y = 0x9D;                               // int8_t
+        y = (int8_t)0x9D;                       // int8_t
         for (i = 0; i <= 8; i++) {              // shift right
             LCD_command(0xC4);
             LCD_data(i + '0');

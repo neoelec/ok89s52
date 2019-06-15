@@ -11,8 +11,8 @@ static uint8_t LED;                             // LED output value
 
 static void TF0_ISR(void) __interrupt 1         // Timer 0 interrupt function
 {
-    TH0 = (0 - 50000) >> 8;                     // initial Timer 0 value
-    TL0 = (0 - 50000) & 0x00FF;
+    TH0 = (uint8_t)((0 - 50000) >> 8);          // initial Timer 0 value
+    TL0 = (uint8_t)((0 - 50000) & 0x00FF);
 
     int_count--;                                // interrupt by 20 times ?
     if (int_count == 0) {
@@ -34,8 +34,8 @@ void main(void)
 
     TMOD = 0x01;                                // Timer 0, mode 1
     TCON = 0x10;                                // TR0=1
-    TH0 = (0 - 50000) >> 8;                     // initial Timer 0 value
-    TL0 = (0 - 50000) & 0x00FF;                 // (24MHz/12/50000 = 40Hz)
+    TH0 = (uint8_t)((0 - 50000) >> 8);          // initial Timer 0 value
+    TL0 = (uint8_t)((0 - 50000) & 0x00FF);      // (24MHz/12/50000 = 40Hz)
     IP = 0x02;                                  // interrupt priority
     IE = 0x82;                                  // EA=ET0=1
 

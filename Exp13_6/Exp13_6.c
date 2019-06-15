@@ -64,10 +64,10 @@ void main(void)
                 break;                          // if KEY1, start
             T2CON = 0x04;                       // Timer 2, 16-bit reload mode
             T2MOD = 0x00;                       // (up counter)
-            RCAP2H = (0 - 20000) >> 8;          // initialize time constant
-            RCAP2L = (0 - 20000) & 0x00FF;      // (24MHz/12/20000 = 100Hz)
-            TH2 = (0 - 20000) >> 8;             // initial Timer 2 value
-            TL2 = (0 - 20000) & 0x00FF;
+            RCAP2H = (uint8_t)((0 - 20000) >> 8);       // initialize time constant
+            RCAP2L = (uint8_t)((0 - 20000) & 0x00FF);   // (24MHz/12/20000 = 100Hz)
+            TH2 = (uint8_t)((0 - 20000) >> 8);          // initial Timer 2 value
+            TL2 = (uint8_t)((0 - 20000) & 0x00FF);
             IP = 0x20;                          // interrupt priority
             IE = 0xA0;                          // EA=ET2=1
             DIG_SELECT = 0x01;                  // LED1 on
