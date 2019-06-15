@@ -16,11 +16,13 @@ static void TXD_char(uint8_t character)
     SBUF = character;                           //      and transmit a character
 }
 
-void putchar(char ch)
+int putchar(int ch)
 {
     if (ch == '\n')
         TXD_char((uint8_t)'\r');
     TXD_char((uint8_t)ch);
+
+    return ch;
 }
 
 static void LCD_s3d(int number)
