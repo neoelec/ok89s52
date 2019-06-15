@@ -24,7 +24,7 @@ _Mul_8bit:
         ret
 
 ;------------------------------------------------
-;       Delay for 1 Second(at 22.1184MHz)
+;       Delay for 1 Second(at 24MHz)
 ;------------------------------------------------
         .globl _Delay_1sec
         .area CSEG
@@ -32,8 +32,8 @@ _Delay_1sec:
         push	acc
         push	b
 
-        mov	a, #200                 ; 200*230*40 = 1840000 cycle
-delay1:	mov	b, #230
+        mov	a, #200			; 200*250*40 = 2000000 cycle
+delay1:	mov	b, #250
 delay2:	push	b                       ; 2
         push	b                       ; 2
         push	b                       ; 2

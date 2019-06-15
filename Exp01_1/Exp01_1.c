@@ -10,7 +10,7 @@ static void Delay_ms(uint16_t ms)
     uint16_t i, j;
 
     for (i = 1; i <= ms; i++)
-        for (j = 1; j <= 230; j++) ;
+        for (j = 1; j <= 250; j++) ;
 }
 
 void main(void)

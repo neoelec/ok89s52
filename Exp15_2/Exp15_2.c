@@ -49,8 +49,8 @@ void main(void)
 
     T2CON = 0x34;                               // TCLK=RCLK=1, TR2=1, C/-T2=0
     T2MOD = 0x00;                               // (baud rate generator)
-    RCAP2H = 0xFF;                              // 115200 bps
-    RCAP2L = 0xFA;
+    RCAP2H = (uint8_t)(65497 >> 8);             // 19200 bps
+    RCAP2L = (uint8_t)(65497 & 0x00FF);
     SCON = 0x52;                                // 8 data, 1 stop, REN=TI=1
     cursor = SBUF;                              // dummy read(clear SBUF)
 
