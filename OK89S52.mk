@@ -10,11 +10,13 @@
 #   r2k     : the Rabbit 2000 / Rabbit 3000 family of processors
 #   r3ka    : the Rabbit 3000A family of processors
 #   gbz80   : the LR35902 GameBoy Z80 processor
+#   tlcs90  : the Toshiba TLCS-89 processor
+#   ez80_z80: the Zilog eZ80 processor in Z80 mode
 #   stm8    : the STMicroelectronics STM8 family of processors
+#   pdk14   : the Padauk processor with 14 bit wide program memory
+#   pdk15   : the Padauk processor with 15 bit wide program memory
 #   pic14   : the Microchip PIC 14-bit processors (in development, not complete)
 #   pic16   : the Microchip PIC 16-bit processors (in development, not complete)
-#   tlcs900h: the Toshiba TLCS-900H processor (not maintained, not complete)
-#   mxa51   : the Phillips XA51 processor (not maintained, not complete)
 MCU		:= mcs51
 
 # Assembler MCU name.
@@ -29,7 +31,7 @@ MCU		:= mcs51
 ASMCU		:= 8051
 
 # Processor frequency.
-F_CPU		:= 22118400
+F_CPU		:= 24000000
 
 
 # Output FORMAT.
@@ -48,8 +50,10 @@ VPATH		:= $(OK89S52_PATH)
 
 
 # Define all C sorce files.
-CSRCS		:= $(TARGET).c OK89S52.c
-
+CSRCS		:= $(TARGET).c
+ifneq (1,$(NO_OK89S52_LIB))
+CSRCS		+= OK89S52.c
+endif
 
 # Define all Assembler source files.
 ASRCS		:= $(EXTRA_ASRCS)
@@ -77,8 +81,9 @@ EXTRAINCDIRS	:= $(OK89S52_PATH)
 #   c89     : ISO C90 and ANSI C89
 #   sdcc99  : ISO C99 + SDCC behaviour
 #   c99     : ISO C99
+#   sdcc11  : ISO C11 + SDCC behaviour
 #   c11     : ISO C11
-CSTANDARD	:= sdcc99
+CSTANDARD	:= sdcc11
 
 
 # Place -I options here
@@ -95,7 +100,7 @@ CDEFS		:= -DF_CPU=$(F_CPU)UL
 
 # Compiler Options
 CFLAGS		:= $(CDEFS) -m$(MCU) $(OPT) --std-$(CSTANDARD)
-CFLAGS		+= --debug
+#CFLAGS		+= --debug
 CFLAGS		+= $(CINCS)
 CFLAGS		+= $(patsubst %,-I%,$(EXTRAINCDIRS))
 CFLAGS		+= $(MCU_CFLAGS)
@@ -189,6 +194,7 @@ $(COBJS): $(OBJDIR)/%.rel: %.c
 	@echo
 	@echo $(MSG_COMPILING)
 	$(CC) -c $(ALL_CFLAGS) -o $@ $<
+
 
 # Assemble: create object files from assembler source files
 $(AOBJS): $(OBJDIR)/%.rel: %.S
