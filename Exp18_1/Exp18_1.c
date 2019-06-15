@@ -3,8 +3,6 @@
 /* ========================================================================== */
 /*                        Designed and programmed by Duck-Yong Yoon in 2005.  */
 
-#pragma optimize(9,SPEED)
-
 #include <at89s52.h>                            // include AT89S52 definition file
 #include <OK89S52.h>                            // include OK-89S52 kit function
 
