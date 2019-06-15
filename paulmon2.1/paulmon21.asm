@@ -1,6 +1,11 @@
 ; PAULMON2, a user-friendly 8051 monitor, by Paul Stoffregen
 ; Please email comments, suggestions, bugs to paul@pjrc.com
 
+; Version 2.1, flash rom changed from 28F256 (obsolete) to
+;   the standard 39F512 algorithm (4 cycle write, 6 cycle erase).
+;   Some code size improvements, contributed by Alexander B. Alexandrov
+;   Download can now start from main menu prompt
+
 ; It's free.  PAULMON2 is in the public domain.  You may copy
 ; sections of code from PAULMON2 into your own programs, even
 ; for commercial purposes.  PAULMON2 should only be distributed
@@ -69,6 +74,34 @@
 .equ	bmem, 0x1000		;where is the beginning of memory
 .equ	emem, 0xFFFF		;end of the memory
 
+; To set the baud rate, use this formula or set to 0 for auto detection
+; baud_const = 256 - (crystal / (12 * 16 * baud))
+
+.equ	baud_const, 0		;automatic baud rate detection
+;.equ	baud_const, 255		;57600 baud w/ 11.0592 MHz
+;.equ	baud_const, 253		;19200 baud w/ 11.0592 MHz
+;.equ	baud_const, 252		;19200 baud w/ 14.7456 MHz
+;.equ	baud_const, 243		;4808 baud w/ 12 MHz
+
+.equ	uart_t2_en, 1
+;.equ	baud_rcap2, 65500	;19200 baud w/ 22.1184 MHz (err 0.00 %)
+.equ	baud_rcap2, 65497	;19200 baud w/ 24.0000 MHz (err 0.16 %)
+
+.equ	line_delay, 6		;num of char times to pause during uploads
+
+; About download speed: when writing to ram, PAULMON2 can accept data
+; at the maximum baud rate (baud_const=255 or 57600 baud w/ 11.0592 MHz).
+; Most terminal emulation programs introduce intentional delays when
+; sending ascii data, which you would want to turn off for downloading
+; larger programs into ram.  For Flash ROM, the maximum speed is set by
+; the time it takes to program each location... 9600 baud seems to work
+; nicely for the AMD 28F256 chip.  The "character pacing" delay in a
+; terminal emulation program should be sufficient to download to flash
+; rom and any baud rate.  Some flash rom chips can write very quickly,
+; allowing high speed baud rates, but other chips can not.  You milage
+; will vary...
+
+
 ; Flash ROM parameters.	 If "has_flash" is set to zero, all flash rom
 ; features are turned off, otherwise "bflash" and "eflash" should specify
 ; the memory range which is flash rom.	Though AMD doesn't suggest it,
@@ -89,37 +122,48 @@
 .equ	erase_pin, 0		;00 = disable erase pin feature
 ;.equ	erase_pin, 0xB5		;B5 = pin 15, P3.5 (T1)
 
+; Development Board Wiring, http://www.pjrc.com/tech/8051/
+; wiring is not a simple A0 to A0... works fine, but requires the
+; special Flash ROM programming addresses to be encoded.
+;Flash: A15 A14 A13 A12 A11 A10  A9  A8  A7  A6  A5  A4  A3  A2  A1  A0
+;8051:   -  A14 A13  A1  A9  A8 A10 A11  A0  A3  A2  A4  A5  A6  A7 A12
+;
+;0x5555  0   1   0   1   0   1   0   1   0   1   0   1   0   1   0   1
+;0x595A  0   1   0   1   1   0   0   1   0   1   0   1   1   0   1   0
+;
+;0x2AAA  0   0   1   0   1   0   1   0   1   0   1   0   1   0   1   0
+;0x26A5  0   0   1   0   0   1   1   0   1   0   1   0   0   1   0   1
+
+;sets the base address to add to the flash memory register addresses.
+.equ    flash_base, bflash
+
+.equ   flash_en1_addr, 0x5555 + flash_base
+;.equ    flash_en1_addr, 0x595A + flash_base
+.equ    flash_en1_data, 0xAA
+
+.equ   flash_en2_addr, 0x2AAA + flash_base
+;.equ    flash_en2_addr, 0x26A5 + flash_base
+.equ    flash_en2_data, 0x55
+
+.equ   flash_wr_addr, 0x5555 + flash_base
+;.equ    flash_wr_addr, 0x595A + flash_base
+.equ    flash_wr_data, 0xA0
+
+.equ   flash_er1_addr, 0x5555 + flash_base
+;.equ    flash_er1_addr, 0x595A + flash_base
+.equ    flash_er1_data, 0x80
+
+.equ   flash_er2_addr, 0x5555 + flash_base
+;.equ    flash_er2_addr, 0x595A + flash_base
+.equ    flash_er2_data, 0x10
+
+
 ; Please note... much of the memory management code only looks at the
 ; upper 8 bits of an address, so it's not a good idea to somehow map
 ; your memory chips (with complex address decoding logic) into chunks
 ; less than 256 bytes.	In other words, only using a piece of a flash
 ; rom chip and mapping it between C43A to F91B would confuse PAULMON2
 ; (as well as require quit a bit of address decoding logic circuitry)
-
-
-; To set the baud rate, use this formula or set to 0 for auto detection
-; baud_const = 256 - (crystal / (12 * 16 * baud))
-
-;.equ	baud_const, 0		;automatic baud rate detection
-.equ	baud_const, 255		;57600 baud w/ 11.0592 MHz
-;.equ	baud_const, 253		;19200 baud w/ 11.0592 MHz
-;.equ	baud_const, 252		;19200 baud w/ 14.7456 MHz
-;.equ	baud_const, 243		;4808 baud w/ 12 MHz
-
-.equ	line_delay, 6		;num of char times to pause during uploads
-
-; About download speed: when writing to ram, PAULMON2 can accept data
-; at the maximum baud rate (baud_const=255 or 57600 baud w/ 11.0592 MHz).
-; Most terminal emulation programs introduce intentional delays when
-; sending ascii data, which you would want to turn off for downloading
-; larger programs into ram.  For Flash ROM, the maximum speed is set by
-; the time it takes to program each location... 9600 baud seems to work
-; nicely for the AMD 28F256 chip.  The "character pacing" delay in a
-; terminal emulation program should be sufficient to download to flash
-; rom and any baud rate.  Some flash rom chips can write very quickly,
-; allowing high speed baud rates, but other chips can not.  You milage
-; will vary...
-
 
 ; Several people didn't like the key definations in PAULMON1.
 ; Actually, I didn't like 'em either, but I never took the time
@@ -249,7 +293,8 @@ pcstr_h:ljmp	pcstr		;45
 	ljmp	find		;5F
 cin_filter_h:
 	ljmp	cin_filter	;62
-	ajmp	asc2hex		;64
+	ajmp	asc2hex		;65
+	ljmp	erblock		;67
 
 
 ;---------------------------------------------------------;
@@ -430,7 +475,6 @@ ghex16y:  ;divide r3-r2 by 16 (shift right by 4)
 
 	;carry set if invalid input
 asc2hex:
-	clr	c
 	add	a, #208
 	jnc	hex_not
 	add	a, #246
@@ -450,27 +494,42 @@ hex_not:setb	c
 	ret
 
 
+; Highly code efficient resursive call phex contributed
+; by Alexander B. Alexandrov <abalex@cbr.spb.ru>
 
 phex:
 phex8:
-	push	acc
-	swap	a
-	anl	a, #15
-	add	a, #246
-	jnc	phex_b
-	add	a, #7
-phex_b: add	a, #58
-	acall	cout
-	pop	acc
+	acall	phex_b
+phex_b:	swap	a		;SWAP A will be twice => A unchanged
 phex1:	push	acc
 	anl	a, #15
-	add	a, #246
-	jnc	phex_c
-	add	a, #7
-phex_c: add	a, #58
+	add	a, #0x90	; acc is 0x9X, where X is hex digit
+	da	a		; if A to F, C=1 and lower four bits are 0..5
+	addc	a, #0x40
+	da	a
 	acall	cout
 	pop	acc
 	ret
+
+; the old code... easier to understand
+;	push	acc
+;	swap	a
+;	anl	a, #15
+;	add	a, #246
+;	jnc	phex_b
+;	add	a, #7
+;phex_b:add	a, #58
+;	acall	cout
+;	pop	acc
+;phex1:	push	acc
+;	anl	a, #15
+;	add	a, #246
+;	jnc	phex_c
+;	add	a, #7
+;phex_c:add	a, #58
+;	acall	cout
+;	pop	acc
+;	ret
 
 
 phex16:
@@ -501,19 +560,19 @@ pstr1:	clr	a
 pstr2:	pop	acc
 	ret
 
+;converts the ascii code in Acc to uppercase, if it is lowercase
 
-upper:	;converts the ascii code in Acc to uppercase, if it is lowercase
-	push	acc
-	clr	c
-	subb	a, #97
-	jc	upper2		;is it a lowercase character
-	subb	a, #26
-	jnc	upper2
-	pop	acc
+; Code efficient (saves 6 byes) upper contributed
+; by Alexander B. Alexandrov <abalex@cbr.spb.ru>
+
+upper:
+	cjne	a, #97, upper2
+upper2:	jc	upper4		;end if acc < 97
+	cjne	a, #123, upper3
+upper3:	jnc	upper4		;end if acc >= 123
 	add	a, #224		;convert to uppercase
-	ret
-upper2: pop	acc		;don't change anything
-	ret
+upper4:	ret
+
 
 
 lenstr: mov	r0, #0	  ;returns length of a string in r0
@@ -565,7 +624,10 @@ menu: ;first we print out the prompt, which isn't as simple
 
 ;now we're finally past the prompt, so let's get some input
 	acall	cin_filter_h	;get the input, finally
-	acall	upper
+	cjne	a, #':', menu0
+	acall	dnld_now
+	sjmp	menu
+menu0:	acall	upper
 
 ;push return address onto stack so we can just jump to the program
 	mov	b, #(menu & 255)  ;we push the return address now,
@@ -611,57 +673,58 @@ menuxend:
 
 ;since we didn't find a user installed command, use the builtin ones
 
-menu1a: cjne	a, #help_key, menu1b
+menu1a:
+menu1b:	cjne	a, #help_key, menu1c
 	mov	dptr, #help_cmd2
 	acall	pcstr_h
 	ajmp	help
-menu1b: cjne	a, #dir_key, menu1c
+menu1c: cjne	a, #dir_key, menu1d
 	mov	dptr, #dir_cmd
 	acall	pcstr_h
 	ajmp	dir
-menu1c: cjne	a, #run_key, menu1d
+menu1d: cjne	a, #run_key, menu1e
 	mov	dptr, #run_cmd
 	acall	pcstr_h
 	ajmp	run
-menu1d: cjne	a, #dnld_key, menu1e
+menu1e: cjne	a, #dnld_key, menu1f
 	mov	dptr, #dnld_cmd
 	acall	pcstr_h
 	ajmp	dnld
-menu1e: cjne	a, #upld_key, menu1f
+menu1f: cjne	a, #upld_key, menu1g
 	mov	dptr, #upld_cmd
 	acall	pcstr_h
 	ajmp	upld
-menu1f: cjne	a, #nloc_key, menu1g
+menu1g: cjne	a, #nloc_key, menu1h
 	mov	dptr, #nloc_cmd
 	acall	pcstr_h
 	ajmp	nloc
-menu1g: cjne	a, #jump_key, menu1h
+menu1h: cjne	a, #jump_key, menu1i
 	mov	dptr, #jump_cmd
 	acall	pcstr_h
 	ajmp	jump
-menu1h: cjne	a, #dump_key, menu1i
+menu1i: cjne	a, #dump_key, menu1j
 	mov	dptr, #dump_cmd
 	acall	pcstr_h
 	ajmp	dump
-menu1i: cjne	a, #edit_key, menu1j
+menu1j: cjne	a, #edit_key, menu1k
 	mov	dptr, #edit_cmd
 	acall	pcstr_h
 	ajmp	edit
-menu1j: cjne	a, #clrm_key, menu1k
+menu1k: cjne	a, #clrm_key, menu1l
 	mov	dptr, #clrm_cmd
 	acall	pcstr_h
 	ajmp	clrm
-menu1k: cjne	a, #erfr_key, menu1l
+menu1l: cjne	a, #erfr_key, menu1m
 	mov	a, #has_flash
 	jz	menu_end
 	mov	dptr, #erfr_cmd
 	acall	pcstr_h
 	ajmp	erfr
-menu1l: cjne	a, #intm_key, menu1m
+menu1m: cjne	a, #intm_key, menu1n
 	mov	dptr, #intm_cmd
 	acall	pcstr_h
 	ljmp	intm
-menu1m:
+menu1n:
 
     ;invalid input, no commands to run...
 menu_end:			;at this point, we have not found
@@ -688,35 +751,43 @@ menu_end:			;at this point, we have not found
 ;  *   6 = unexpected hex digits (while waiting for bol)
 ;  *   7 = unexpected non-hex digits (in middle of a line)
 
+
+
 dnld:
 	mov	dptr, #dnlds1		 
 	acall	pcstr_h		   ;"begin sending file <ESC> to abort"
-	mov	r0, #dnld_parm
-	mov	r2, #16
-dnld0:	mov	@r0, #0		;initialize all parameters to 0
-	inc	r0
-	djnz	r2, dnld0
+	acall	dnld_init
 
 	  ;look for begining of line marker ':'
 dnld1:	acall	cin
 	cjne	a, #27, dnld2	;Test for escape
 	sjmp	dnld_esc
+
 dnld2:	cjne	a, #':', dnld2b
-	mov	r1, #0
-	acall	dnld_inc
-	sjmp	dnld3
+	sjmp	dnld2d
 dnld2b:	  ;check to see if it's a hex digit, error if it is
 	acall	asc2hex
 	jc	dnld1
 	mov	r1, #6
 	acall	dnld_inc
 	sjmp	dnld1
-	  ;begin taking in the line of data
-dnld3:	mov	a, #'.'
+
+dnld_now: ;entry point for main menu detecting ":" character
+	mov	a, #'^'
 	acall	cout
+	acall	dnld_init
+
+dnld2d:	mov	r1, #0
+	acall	dnld_inc
+
+	  ;begin taking in the line of data
+dnld3:	;mov	a, #'.'
+	;acall	cout
 	mov	r4, #0		;r4 will count up checksum
 	acall	dnld_ghex
 	mov	r0, a		;R0 = # of data bytes
+	mov	a, #'.'
+	acall	cout
 	acall	dnld_ghex
 	mov	dph, a		;High byte of load address
 	acall	dnld_ghex
@@ -947,6 +1018,15 @@ dnld_i0:acall	dnld_gp		;non-error conditions
 	sjmp	dnld_i2
 
 
+dnld_init:
+	;init all dnld parms to zero.
+	mov	r0, #dnld_parm
+dnld0:	mov	@r0, #0
+	inc	r0
+	cjne	r0, #dnld_parm + 16, dnld0
+	ret
+
+
 ;dnlds7:  = "Errors:"
 ;dnlds8:  = " bytes unable to write"
 ;dnlds9:  = " incorrect checksums"
@@ -982,14 +1062,9 @@ jump_doit:  ;jump to user code @dptr (this used by run command also)
 	clr	a
 	mov	psw, a
 	mov	b, a
-	mov	r0, a
-	mov	r1, a
-	mov	r2, a
-	mov	r3, a
-	mov	r4, a
-	mov	r5, a
-	mov	r6, a
-	mov	r7, a
+	mov	r0, #7
+jditclr:mov	@r0, a		;clear r7 to r1
+	djnz	r0, jditclr	;clear r0
 	mov	sp, #8		;start w/ sp=7, like a real reset
 	push	acc		;unlike a real reset, push 0000
 	push	acc		;in case they end with a RET
@@ -1194,9 +1269,8 @@ run4a:	acall	cout
 	acall	newline
 	;check to see if it's under 32, if so convert to uppercase
 	mov	a, r3
-	clr	c
-	subb	a, #'A'
-	jc	run4		;if they typed less than 'A'
+	add	a, #(256 - 'A')
+	jnc	run4		;if they typed less than 'A'
 	mov	r3, a		;R3 has the number they typed
 	mov	a, r2		;A=R2 has the maximum number
 	clr	c
@@ -1540,6 +1614,105 @@ intm4:	acall	space
 ;---------------------------------------------------------;
 
 
+
+
+	; poll the flash rom using it's toggle bit feature
+	; on D6... and wait until the flash rom is not busy
+	; dptr must be initialized with the address to read
+flash_wait:
+	push	b
+	clr	a
+	movc	a, @a+dptr
+flwt2:	mov	b, a
+	inc	r5
+	clr	a
+	movc	a, @a+dptr
+	cjne	a, b, flwt2
+	pop	b
+	ret
+
+	;send the flash enable codes
+flash_en:
+	mov	dptr, #flash_en1_addr
+	mov	a, #flash_en1_data
+	movx	@dptr, a
+	mov	dptr, #flash_en2_addr
+	mov	a, #flash_en2_data
+	movx	@dptr, a
+	ret
+
+
+;a routine that writes ACC to into flash memory at DPTR
+; C is set if error occurs, C is clear if it worked
+
+prgm:	xch	a, r0
+	push	acc
+	push	dpl
+	push	dph
+	acall	flash_en		;do first step, enable writing
+	mov	dptr, #flash_wr_addr
+	mov	a, #flash_wr_data
+	movx	@dptr, a		;send flash write command
+	pop	dph
+	pop	dpl
+	mov	a, r0
+	movx	@dptr, a		;write the data
+	acall	flash_wait		;wait until it's done
+	clr	a
+	movc	a, @a+dptr		;read it back
+	clr	c
+	xrl	a, r0
+	jz	prgmend			;check if data written ok
+	setb	c
+prgmend:pop	acc
+	xch	a, r0
+	ret
+
+; erase the entire flash rom
+; C=1 if failure, C=0 if ok
+
+erall:
+	mov	dptr, #flash_er2_addr
+	mov	a, #flash_er2_data
+	acall	erblock			;use erblock to send erase all
+	mov	dptr, #bflash
+erall2:	clr	a
+	movc	a, @a+dptr		;read back flash memory
+	cpl	a
+	jnz	erall_err		;check if it's really erased
+	inc	dptr
+	mov	a, #((eflash+1) & 255)
+	cjne	a, dpl, erall2
+	mov	a, #(((eflash+1) >> 8) & 255)
+	cjne	a, dph, erall2
+	clr	c
+	ret
+erall_err:
+	setb	c
+	ret
+
+
+	;send a custom erase command.  This is used by erall,
+	;and it's intended to be callable from the flash memory
+	;so that custom block erase code can be implemented
+erblock:
+	push	acc
+	push	dpl
+	push	dph
+	acall	flash_en		;send flash enable stuff
+	mov	dptr, #flash_er1_addr
+	mov	a, #flash_er1_data
+	movx	@dptr, a		;send erase enable
+	acall	flash_en		;send flash enable stuff
+	pop	dph
+	pop	dpl
+	pop	acc
+	movx	@dptr, a		;send erase command
+	ajmp	flash_wait
+
+
+
+
 ;finds the next header in the external memory.
 ;  Input DPTR=point to start search (only MSB used)
 ;  Output DPTR=location of next module
@@ -1570,132 +1743,6 @@ find3:	mov	a, #(emem >> 8)
 find4:	inc	dph			;keep on searching
 	sjmp	find
 
-
-
-;routine that erases the whole flash rom!  C=1 if failure, C=0 if ok
-
-erall:	mov	a, #has_flash
-	jz	erallno
-	mov	dptr, #bflash		;is it already erased ??
-erall0: clr	a
-	movc	a, @a+dptr
-	cpl	a
-	jnz	erall_b			;do actual erase if any byte not 255
-	inc	dptr
-	mov	a, #((eflash+1) & 255)
-	cjne	a, dpl, erall0
-	mov	a, #(((eflash+1) >> 8) & 255)
-	cjne	a, dph, erall0
-	;if we get here, the entire chip was already erased,
-	;so there is no need to do anything
-	clr	c
-	ret
-erall_b:
-	mov	dptr, #bflash		;first program to all 00's
-erall1: clr	a
-	movc	a, @a+dptr
-	jz	erall2			;don't waste time!
-	clr	a
-	lcall	prgm			;ok, program this byte
-	;if the program operation failed... we should abort because
-	;they are all likely to fail and it will take a long time...
-	;which give the appearance that the program has crashed,
-	;when it's really following the flash rom algorithm
-	;correctly and getting timeouts.
-	jc	erallno
-	;mov	a, #'.'
-	;lcall	cout
-erall2: inc	dptr
-	mov	a, #((eflash+1) & 255)
-	cjne	a, dpl, erall1
-	mov	a, #(((eflash+1) >> 8) & 255)
-	cjne	a, dph, erall1		;after this it's all 00's
-	mov	dptr, #bflash		;beginning address
-	mov	r4, #232		;max # of trials, lsb
-	mov	r5, #4			;max # of trials, msb-1
-erall3: 
-	;mov	a, #'#'
-	;lcall	cout
-	djnz	r4, erall3a
-	djnz	r5, erall3a
-erallno:setb	c
-	ret				;if it didn't work!
-erall3a:mov	a, #0x20
-	mov	c, ea		 ;-	;turn off all interrupts!!
-	mov	psw.1, c
-	clr	ea
-	movx	@dptr, a		;send the erase setup
-	movx	@dptr, a		;and begin the erase
-	mov	r3, #erwait1
-erwt:	mov	r2, #erwait2		;now wait 10ms...
-	djnz	r2, *
-	djnz	r3, erwt
-erall4: mov	a, #0xA0
-	movx	@dptr, a		;send erase verify
-	mov	r2, #verwait		;wait for 6us
-	djnz	r2, *
-	clr	a
-	movc	a, @a+dptr
-	mov	c, psw.1
-	mov	ea, c		;-     ;turn interrupts back on
-	cpl	a
-	jnz	erall3			;erase again if not FF
-	inc	dptr
-	mov	a, #(((eflash+1) >> 8) & 255)  ;verify whole array
-	cjne	a, dph, erall4
-	mov	a, #((eflash+1) & 255)
-	cjne	a, dpl, erall4
-	mov	a, #255
-	mov	dptr, #bflash
-	movx	@dptr, a		;reset the flash rom
-	clr	a
-	movx	@dptr, a		;and go back to read mode
-	clr	c
-	ret
-
-
-
-
-;a routine that writes ACC to into flash memory at DPTR
-; assumes that Vpp is active and stable already.
-; C is set if error occurs, C is clear if it worked
-
-prgm:	mov	b, a
-	mov	a, r2
-	push	acc
-	mov	a, r3
-	push	acc
-	mov	r2, #25	       ;try to program 25 times if needed
-prgm2:	mov	a, #40h
-	mov	c, ea		 ;-	;turn off all interrupts!!
-	mov	psw.1, c
-	clr	ea
-	movx	@dptr, a	;send setup programming command
-	mov	a, b
-	movx	@dptr, a	;write to the cell
-	mov	r3, #pgmwait	;now wait for 10us
-	djnz	r3, *
-	mov	a, #0xC0
-	movx	@dptr, a	;send program verify command
-	mov	r3, #verwait	;wait 6us while it adds margin
-	djnz	r3, *
-	clr	a
-	movc	a, @a+dptr
-	mov	c, psw.1
-	mov	ea, c		;-     ;turn interrupts back on
-	clr	c
-	subb	a, b
-	jz	prgmok		;note, C is still clear is ACC=0
-	djnz	r2, prgm2
-prgmbad:setb	c		;it gets here if programming failure
-prgmok: clr	a
-	movx	@dptr, a	;and go back into read mode
-	pop	acc
-	mov	r3, a
-	pop	acc
-	mov	r2, a
-	mov	a, b		;restore ACC to original value
-	ret
 
 
 
@@ -1729,14 +1776,7 @@ isfl3:	jnc	wr_ram
 	cjne	a, #(bflash >> 8), isfl4
 	sjmp	wr_flash
 isfl4:	jnc	wr_flash
-	sjmp	wr_ram
-
-wr_flash:
-	mov	a, b
-	acall	prgm
-	pop	b
-	pop	acc
-	ret
+	;sjmp	wr_ram
 
 wr_ram: mov	a, b
 	movx	@dptr, a	;write the value to memory
@@ -1753,6 +1793,13 @@ smwrbad:setb	c
 	sjmp	smwrxit
 smwrok: clr	c
 smwrxit:pop	b
+	pop	acc
+	ret
+
+wr_flash:
+	mov	a, b
+	lcall	prgm
+	pop	b
 	pop	acc
 	ret
 
@@ -1893,6 +1940,10 @@ stcode5:ret			;now we've executed all of 'em
 
 
 autobaud:
+	mov	a, #uart_t2_en	;if use a timer2 as a baud rate generator
+	jz	uart_t1_init
+	ljmp	uart_t2_init
+uart_t1_init:
 	mov	a, #baud_const	;skip if user supplied baud rate constant
 	jnz	autoend_jmp
 	mov	a, baud_save+3	;is there a value from a previous boot?
@@ -2032,6 +2083,15 @@ autoend:mov	baud_save+3, a
 	setb	tr1		;start the baud rate timer
 	ret
 
+uart_t2_init:
+	mov	t2con,#00110100b	; tclk=rclk=1, tr2=1, c/-t2=0
+	mov	t2con+0x1,#00000000b	; (baud rate generator)
+	mov	dptr,#baud_rcap2
+	mov	rcap2h,dph
+	mov	rcap2l,dpl
+	mov	scon,#0x52		; 8 bit, 1 stop, ren=ti=1
+	mov	a,sbuf			; dummy read(clear sbuf)
+	ret
 
 
 ;---------------------------------------------------------;
@@ -2448,7 +2508,7 @@ words:
 
 ;STR
 
-logon1: .db	"Welcome",128,148,"2, by",31,248,31,254,13,14
+logon1: .db	"Welcome",128,148,"2 v2.1, by",31,248,31,254,13,14
 logon2: .db	32,32,"See",148,"2.DOC,",148,"2.EQU",164
 	.db	148,"2.HDR",180,213,141,".",14
 abort:	.db	" ",31,158,31,160,"!",13,14
