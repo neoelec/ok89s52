@@ -136,7 +136,7 @@ REMOVE		:= rm -rf
 
 # Define all object files.
 COBJS		:= $(addprefix $(OBJDIR)/, $(CSRCS:.c=.rel))
-AOBJS		:= $(addprefix $(OBJDIR)/, $(ASRCS:.S=.rel))
+AOBJS		:= $(addprefix $(OBJDIR)/, $(ASRCS:.asm=.rel))
 
 
 # Define output file
@@ -197,7 +197,7 @@ $(COBJS): $(OBJDIR)/%.rel: %.c
 
 
 # Assemble: create object files from assembler source files
-$(AOBJS): $(OBJDIR)/%.rel: %.S
+$(AOBJS): $(OBJDIR)/%.rel: %.asm
 	@echo
 	@echo $(MSG_ASSEMBLING) $<
 	$(AS) $(ALL_ASFLAGS) -o $@ $<

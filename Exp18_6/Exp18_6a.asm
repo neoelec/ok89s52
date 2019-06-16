@@ -1,5 +1,5 @@
 ;==========================================================================
-;           Exp18_6a.S : Assembly Program for C & Assembly Link
+;           Exp18_6a.asm : Assembly Program for C & Assembly Link
 ;==========================================================================
 ;                       Designed and programmed by Duck-Yong Yoon in 2005.
 
