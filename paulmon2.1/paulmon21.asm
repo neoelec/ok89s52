@@ -2512,8 +2512,8 @@ logon1: .db	"Welcome",128,148,"2 v2.1, by",31,248,31,254,13,14
 logon2: .db	32,32,"See",148,"2.DOC,",148,"2.EQU",164
 	.db	148,"2.HDR",180,213,141,".",14
 abort:	.db	" ",31,158,31,160,"!",13,14
-prompt1:.db	148,"2 Loc:",0
-prompt2:.db	" >", 160	;must follow after prompt1
+prompt1:.db	27,"[34m",148,"2",27,"[0m Loc:",27,"[33m",0
+prompt2:.db	" ",27,"[0m>", 160	;must follow after prompt1
 prompt3:.db	134,202,130,'(',0
 prompt4:.db	"),",149,140,128,200,": ",0
 prompt5:.db	31,151,130,195,"s",199,166,131,","
