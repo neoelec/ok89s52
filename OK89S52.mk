@@ -204,7 +204,7 @@ $(AOBJS): $(OBJDIR)/%.rel: %.asm
 
 
 upload: build
-	@ascii-xfr -s $(OUTPUT) > $(TTY_DEV)
+	@cat $(OUTPUT) > $(TTY_DEV)
 
 
 # Target: clean project.
