@@ -1,4 +1,7 @@
 # Hey Emacs, this is a -*- makefile -*-
+
+USE_PAULMON	:= 1
+
 # MCU name.
 #   mcs51   : the Intel MCS51 family of processors
 #   ds390   : the Dallas DS80C390 processor
@@ -55,8 +58,12 @@ ifneq (1,$(NO_OK89S52_LIB))
 CSRCS		+= OK89S52.c
 endif
 
+
 # Define all Assembler source files.
 ASRCS		:= $(EXTRA_ASRCS)
+ifeq (1,$(USE_PAULMON))
+ASRCS		+= PAULMON.asm
+endif
 
 
 # Define TTY Device.
@@ -74,6 +81,11 @@ OPT		:= --opt-code-size
 
 # List any extra directories to look for include files here.
 EXTRAINCDIRS	:= $(OK89S52_PATH)
+ifeq (1,$(USE_PAULMON))
+EXTRAINCDIRS	+= $(OK89S52_PATH)/Inc_w_PAULMON
+else
+EXTRAINCDIRS	+= $(OK89S52_PATH)/Inc_wo_PAULMON
+endif
 
 
 # Compiler flag to set the C Standard level.
@@ -114,11 +126,19 @@ ASFLAGS		+= $(patsubst %,-I%,$(EXTRAINCDIRS))
 
 
 # The start location of the external ram, default value is 0.
+ifeq (1,$(USE_PAULMON))
 XRAM_LOC	:= --xram-loc 0x4000
+else
+XRAM_LOC	:=
+endif
 
 
 # The start location of the code segment, default value is 0.
+ifeq (1,$(USE_PAULMON))
 CODE_LOC	:= --code-loc 0x2000
+else
+CODE_LOC	:=
+endif
 
 
 LDFLAGS		:= --out-fmt-$(FORMAT) $(OPT)
@@ -187,6 +207,7 @@ $(OUTPUT): $(COBJS) $(AOBJS)
 	@echo
 	@echo $(MSG_LINKING)
 	$(CC) $(LDFLAGS) -o $@ $^
+	@cat $(@:.$(FORMAT)=.mem)
 
 
 # Compile: create object files from C source files.
