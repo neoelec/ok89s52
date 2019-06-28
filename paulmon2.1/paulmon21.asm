@@ -72,7 +72,7 @@
 
 .equ	pgm, 0x2000		;default location for the user program
 .equ	bmem, 0x1000		;where is the beginning of memory
-.equ	emem, 0xFFFF		;end of the memory
+.equ	emem, 0x7FFF		;end of the memory
 
 ; To set the baud rate, use this formula or set to 0 for auto detection
 ; baud_const = 256 - (crystal / (12 * 16 * baud))
