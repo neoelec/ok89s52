@@ -1,6 +1,7 @@
 # Hey Emacs, this is a -*- makefile -*-
 
 USE_PAULMON	:= 1
+OK89S52_PATH	:= $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 
 # MCU name.
 #   mcs51   : the Intel MCS51 family of processors
