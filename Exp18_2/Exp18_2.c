@@ -3,8 +3,8 @@
 /* ========================================================================== */
 /*                        Designed and programmed by Duck-Yong Yoon in 2005.  */
 
-#include "AT89S52.H"                           // include AT89S52 definition file
-#include "OK89S52.H"                           // include OK-89S52 kit function
+#include "at89s52.h"                           // include AT89S52 definition file
+#include "OK89S52.h"                           // include OK-89S52 kit function
 
 #define LED1 (*(unsigned char data *)0x30)     // internal SRAM address
 #define LED2 (*(unsigned char data *)0x31)

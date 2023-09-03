@@ -3,8 +3,8 @@
 /* ========================================================================== */
 /*                        Designed and programmed by Duck-Yong Yoon in 2005.  */
 
-#include "AT89S52.H"                           // include AT89S52 definition file
-#include "OK89S52.H"                           // include OK-89S52 kit function
+#include "at89s52.h"                           // include AT89S52 definition file
+#include "OK89S52.h"                           // include OK-89S52 kit function
 
 unsigned char code sin_data[100] = {           // sinusoidal wave data table
   0x80, 0x88, 0x90, 0x98, 0xA0, 0xA7, 0xAF, 0xB6, 0xBD, 0xC4,

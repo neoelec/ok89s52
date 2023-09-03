@@ -3,9 +3,9 @@
 /* ========================================================================== */
 /*                        Designed and programmed by Duck-Yong Yoon in 2005.  */
 
-#include <MATH.H>
-#include "AT89S52.H"                           // include AT89S52 definition file
-#include "OK89S52.H"                           // include OK-89S52 kit function
+#include <math.h>
+#include "at89s52.h"                           // include AT89S52 definition file
+#include "OK89S52.h"                           // include OK-89S52 kit function
 
 void LCD_3d(unsigned char number)
 {                                              /* unsigned 3-digit decimal number */

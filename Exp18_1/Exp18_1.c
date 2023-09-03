@@ -5,8 +5,8 @@
 
 #pragma optimize(9,SPEED)
 
-#include "AT89S52.H"                           // include AT89S52 definition file
-#include "OK89S52.H"                           // include OK-89S52 kit function
+#include "at89s52.h"                           // include AT89S52 definition file
+#include "OK89S52.h"                           // include OK-89S52 kit function
 
 void LCD_5d(unsigned int number)
 {                                              /* display 5-digit decimal number */

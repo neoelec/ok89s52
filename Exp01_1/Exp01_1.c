@@ -1,4 +1,4 @@
-#include "AT89S52.H"
+#include "at89s52.h"
 
 #define SEG_PATTERN (*(unsigned char xdata *)0x8100)
 #define DIG_SELECT (*(unsigned char xdata *)0x8200)

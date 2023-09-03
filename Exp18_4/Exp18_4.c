@@ -3,7 +3,7 @@
 /* ========================================================================== */
 /*                        Designed and programmed by Duck-Yong Yoon in 2005.  */
 
-#include "AT89S52.H"                           // include AT89S52 definition file
+#include "at89s52.h"                           // include AT89S52 definition file
 
 #define SEG_PATTERN (*(unsigned char xdata *)0x8100)
 #define DIG_SELECT (*(unsigned char xdata *)0x8200)
