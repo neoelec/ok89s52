@@ -5,8 +5,8 @@
 
 #include <at89s52.h>                           // include AT89S52 definition file
 
-#define SEG_PATTERN (*(unsigned char xdata *)0x8100)
-#define DIG_SELECT (*(unsigned char xdata *)0x8200)
+#define SEG_PATTERN (*(unsigned char __xdata *)0x8100)
+#define DIG_SELECT (*(unsigned char __xdata *)0x8200)
 
 void Delay_ms(unsigned int ms)
 {                                              /* time delay for ms[ms] */

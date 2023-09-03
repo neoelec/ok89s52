@@ -4,7 +4,7 @@
 /*                                                                     */
 /***********************************************************************/
 
-#define LCD_WR_DATA (*(unsigned char xdata *)0x8301)
+#define LCD_WR_DATA (*(unsigned char __xdata *)0x8301)
 
 void Delay_us(unsigned char us);
 

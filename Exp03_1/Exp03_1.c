@@ -5,11 +5,11 @@
 
 #include <at89s52.h>                           // include AT89S52 definition file
 
-#define SEG_PATTERN (*(unsigned char xdata *)0x8100)  /* segment pattern data */
-#define DIG_SELECT (*(unsigned char xdata *)0x8200) /* digit select data */
+#define SEG_PATTERN (*(unsigned char __xdata *)0x8100)  /* segment pattern data */
+#define DIG_SELECT (*(unsigned char __xdata *)0x8200) /* digit select data */
 
-#define LCD_WR_INST (*(unsigned char xdata *)0x8300)  /* LCD module */
-#define LCD_WR_DATA (*(unsigned char xdata *)0x8301)
+#define LCD_WR_INST (*(unsigned char __xdata *)0x8300)  /* LCD module */
+#define LCD_WR_DATA (*(unsigned char __xdata *)0x8301)
 
 void Kit_initialize(void)
 {                                              /* initialize OK-89S52 kit */
