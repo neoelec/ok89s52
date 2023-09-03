@@ -1,5 +1,6 @@
 # Hey Emacs, this is a -*- makefile -*-
 
+USE_PAULMON	:= y
 PROJECT_PATH	:= $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 
 # MCU name.
@@ -58,6 +59,9 @@ CSRCS		+=
 
 # Define all Assembler source files.
 ASRCS		+=
+ifeq ($(USE_PAULMON),y)
+ASRCS		+= PAULMON.asm
+endif
 
 
 # Define TTY Device.
@@ -75,7 +79,12 @@ OPT		:= --opt-code-size
 
 # List any extra directories to look for include files here.
 EXTRAINCDIRS	?= $(PROJECT_PATH)
-
+EXTRAINCDIRS	:= $(PROJECT_PATH)
+ifeq ($(USE_PAULMON),y)
+EXTRAINCDIRS	+= $(PROJECT_PATH)/Inc_w_PAULMON
+else
+EXTRAINCDIRS	+= $(PROJECT_PATH)/Inc_wo_PAULMON
+endif
 
 # Compiler flag to set the C Standard level.
 #   sdcc89  : ISO C90 and ANSI C89 + SDCC behaviour
@@ -115,11 +124,19 @@ ASFLAGS		+= $(patsubst %,-I%,$(EXTRAINCDIRS))
 
 
 # The start location of the external ram, default value is 0.
+ifeq ($(USE_PAULMON),y)
+XRAM_LOC	:= --xram-loc 0x4000
+else
 XRAM_LOC	:=
+endif
 
 
 # The start location of the code segment, default value is 0.
+ifeq ($(USE_PAULMON),y)
+CODE_LOC	:= --code-loc 0x2000
+else
 CODE_LOC	:=
+endif
 
 
 LDFLAGS		+= --out-fmt-$(FORMAT) $(OPT)
