@@ -65,7 +65,7 @@ void main(void)
       LCD_command(0xC5);
       LCD_2d1(x);                              // display argument
       LCD_command(0xCB);
-      LCD_1d3(sqrt(x));                        // display sqrt
+      LCD_1d3(sqrtf(x));                       // display sqrt
       Delay_ms(2000);
     }
   }

@@ -3,8 +3,9 @@
 /* ========================================================================== */
 /*                        Designed and programmed by Duck-Yong Yoon in 2005.  */
 
-#include <stdio.h>
 #include <math.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <at89s52.h>                           // include AT89S52 definition file
 #include "OK89S52.h"                           // include OK-89S52 kit function
 
@@ -50,7 +51,7 @@ void LCD_s1d3(float number)
   else
     LCD_data('-');
 
-  number = fabs(number);
+  number = fabsf(number);
   j = (int)(number * 1000. + 0.5);
 
   i = j / 1000;                                // 10^0
@@ -92,17 +93,17 @@ void main(void)
     Beep();
     for (i = -360; i <= +360; i += 30) {
       x = i * 3.141592654 / 180.;
-      y = sin(x);
+      y = sinf(x);
       LCD_command(0x84);
       LCD_s3d(i);                              // display sin()
       LCD_command(0x8A);
       LCD_s1d3(y);
       printf("sin(%+04d)=%+6.3f\n", i, y);     // printf for sin output
-      y = cos(x);
+      y = cosf(x);
       LCD_command(0xC4);
       LCD_s3d(i);                              // display cos()
       LCD_command(0xCA);
-      LCD_s1d3(cos(x));
+      LCD_s1d3(cosf(x));
       printf("cos(%+04d)=%+6.3f\n\n", i, y);   // printf for cos output
       Delay_ms(2000);
     }

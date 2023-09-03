@@ -24,10 +24,10 @@ void main(void)
     Beep();
     for (i = -360; i <= +360; i += 30) {
       x = i * 3.141592654 / 180.;
-      y = sin(x);
+      y = sinf(x);
       LCD_command(0x80);                       // display sin()
       printf("sin(%+04d)=%+6.3f", i, y);       // printf for sin output
-      y = cos(x);
+      y = cosf(x);
       LCD_command(0xC0);                       // display cos()
       printf("cos(%+04d)=%+6.3f", i, y);       // printf for cos output
       Delay_ms(2000);

@@ -61,11 +61,11 @@ void main(void)
       LCD_command(0x86);
       LCD_2d0(x);                              // display natural logarithm
       LCD_command(0x8B);
-      LCD_1d3(log(x));
+      LCD_1d3(logf(x));
       LCD_command(0xC6);
       LCD_2d0(x);                              // display common logarithm
       LCD_command(0xCB);
-      LCD_1d3(log10(x));
+      LCD_1d3(log10f(x));
       Delay_ms(2000);
     }
   }

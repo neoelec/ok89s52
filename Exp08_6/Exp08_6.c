@@ -4,6 +4,7 @@
 /*                        Designed and programmed by Duck-Yong Yoon in 2005.  */
 
 #include <math.h>
+#include <stdlib.h>
 #include <at89s52.h>                           // include AT89S52 definition file
 #include "OK89S52.h"                           // include OK-89S52 kit function
 
@@ -49,7 +50,7 @@ void LCD_s1d3(float number)
   else
     LCD_data('-');
 
-  number = fabs(number);
+  number = fabsf(number);
   j = (int)(number * 1000. + 0.5);
 
   i = j / 1000;                                // 10^0
@@ -87,11 +88,11 @@ void main(void)
       LCD_command(0x84);
       LCD_s3d(i);                              // display sine
       LCD_command(0x8A);
-      LCD_s1d3(sin(x));
+      LCD_s1d3(sinf(x));
       LCD_command(0xC4);
       LCD_s3d(i);                              // display cosine
       LCD_command(0xCA);
-      LCD_s1d3(cos(x));
+      LCD_s1d3(cosf(x));
       Delay_ms(2000);
     }
   }
