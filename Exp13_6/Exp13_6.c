@@ -17,7 +17,7 @@ void LCD_2d(unsigned char number)
   LCD_data(number % 10 + '0');                 // 10^0
 }
 
-void TF2_ISR(void) interrupt 5                 /* Timer 2 int. service routine */
+void TF2_ISR(void) __interrupt 5               /* Timer 2 int. service routine */
 {
   TF2 = 0;                                     // clear TF2 flag
   second++;                                    // increment interrupt counter

@@ -23,7 +23,7 @@ void TXD_string(char *string)
   }
 }
 
-void TIRI_ISR(void) interrupt 4                /* serial int. service routine */
+void TIRI_ISR(void) __interrupt 4              /* serial int. service routine */
 {
   if (RI) {                                    // receive ready ?
     LCD_data(SBUF);                            // if yes, receive and RI=0

@@ -44,7 +44,7 @@ void LCD_3d2(unsigned int number)
   LCD_data(i + '0');
 }
 
-void TF0_ISR(void) interrupt 1                 /* Timer 0 int. service routine */
+void TF0_ISR(void) __interrupt 1               /* Timer 0 int. service routine */
 {
   TH0 = (0 - 20000) >> 8;                      // initial Timer 0 value
   TL0 = (0 - 20000) & 0x00FF;                  // (24MHz/12/20000 = 100Hz)

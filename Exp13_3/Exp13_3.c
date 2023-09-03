@@ -9,7 +9,7 @@
 unsigned char int_count;                       // interrupt counter
 unsigned char LED;                             // LED output value
 
-void TF2_ISR(void) interrupt 5                 // Timer 2 interrupt function
+void TF2_ISR(void) __interrupt 5               // Timer 2 interrupt function
 {
   TF2 = 0;                                     // clear TF2 flag
   int_count--;                                 // interrupt by 20 times ?

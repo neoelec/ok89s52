@@ -9,7 +9,7 @@
 unsigned char int_count;                       // interrupt counter
 unsigned char LED;                             // LED output value
 
-void TF0_ISR(void) interrupt 1                 // Timer 0 interrupt function
+void TF0_ISR(void) __interrupt 1               // Timer 0 interrupt function
 {
   TH0 = (0 - 50000) >> 8;                      // initial Timer 0 value
   TL0 = (0 - 50000) & 0x00FF;

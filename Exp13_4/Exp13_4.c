@@ -9,7 +9,7 @@
 unsigned int int0_count, int1_count;           // interrupt counter
 unsigned char LED;                             // LED output value
 
-void TF0_ISR(void) interrupt 1                 // Timer 0 interrupt function
+void TF0_ISR(void) __interrupt 1               // Timer 0 interrupt function
 {
   int0_count--;                                // interrupt by 1000 times ?
   if (int0_count == 0) {
@@ -19,7 +19,7 @@ void TF0_ISR(void) interrupt 1                 // Timer 0 interrupt function
   }
 }
 
-void TF1_ISR(void) interrupt 3                 // Timer 1 interrupt function
+void TF1_ISR(void) __interrupt 3               // Timer 1 interrupt function
 {
   int1_count--;                                // interrupt by 4000 times ?
   if (int1_count == 0) {

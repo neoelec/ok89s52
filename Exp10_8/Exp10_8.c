@@ -34,7 +34,7 @@ void LCD_3d(unsigned int number)
 
 unsigned char int_count = 0;                   // interrupt counter
 
-void INT0_ISR(void) interrupt 0                // -INT0 interrupt function
+void INT0_ISR(void) __interrupt 0              // -INT0 interrupt function
 {
   Beep();                                      // beep and delay for debouncing
   int_count++;                                 // increment interrupt count

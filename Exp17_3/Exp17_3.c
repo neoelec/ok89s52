@@ -21,7 +21,7 @@ unsigned char __code tri_data[100] = {         // triangular wave data table
 
 unsigned char count;                           // interrupt counter
 
-void TF0_ISR(void) interrupt 1                 /* Timer 0 int. service routine */
+void TF0_ISR(void) __interrupt 1               /* Timer 0 int. service routine */
 {
   count++;                                     // increment software count
   if (count == 100)

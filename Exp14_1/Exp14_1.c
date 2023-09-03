@@ -18,11 +18,11 @@ void LCD_2d(unsigned char number)
   LCD_data(number % 10 + '0');                 // 10^0
 }
 
-void TF0_ISR(void) interrupt 1                 /* Timer 0 int. service routine */
+void TF0_ISR(void) __interrupt 1               /* Timer 0 int. service routine */
 {
   int_count--;
   if (int_count != 0)
-    return;                                    // interrupt 8000 times ?
+    return;                                    // __interrupt 8000 times ?
   int_count = 8000;
   second++;                                    // if yes, increment second
   if (second == 60) {                          // 60 seconds ?

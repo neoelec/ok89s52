@@ -19,14 +19,14 @@ void LCD_2d(unsigned char number)
   LCD_data(number % 10 + '0');                 // 10^0
 }
 
-void TF2_ISR(void) interrupt 5                 /* Timer 2 int. service routine */
+void TF2_ISR(void) __interrupt 5               /* Timer 2 int. service routine */
 {
   unsigned char colon;
 
   TF2 = 0;                                     // clear TF2 flag
   int_count--;
   if (int_count != 0)
-    return;                                    // interrupt 20 times ?
+    return;                                    // __interrupt 20 times ?
   int_count = 20;
   colon_flag ^= 0x01;                          // colon on or off ?
   if (colon_flag == 0)
