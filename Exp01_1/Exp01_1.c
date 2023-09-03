@@ -1,3 +1,4 @@
+
 #include <at89s52.h>
 
 #define SEG_PATTERN (*(unsigned char __xdata *)0x8100)

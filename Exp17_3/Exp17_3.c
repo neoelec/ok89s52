@@ -4,7 +4,7 @@
 /*                        Designed and programmed by Duck-Yong Yoon in 2005.  */
 
 #include <at89s52.h>                           // include AT89S52 definition file
-#include "OK89S52.h"                           // include OK-89S52 kit function
+#include <OK89S52.h>                           // include OK-89S52 kit function
 
 unsigned char __code tri_data[100] = {         // triangular wave data table
   0x80, 0x84, 0x88, 0x8C, 0x90, 0x94, 0x98, 0x9C, 0xA0, 0xA4,

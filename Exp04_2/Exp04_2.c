@@ -4,7 +4,7 @@
 /*                        Designed and programmed by Duck-Yong Yoon in 2005.  */
 
 #include <at89s52.h>                           // include AT89S52 definition file
-#include "OK89S52.h"                           // include OK-89S52 kit function
+#include <OK89S52.h>                           // include OK-89S52 kit function
 
 void Timer0_ms(unsigned int ms)
 {                                              /* time delay for ms[ms] */
