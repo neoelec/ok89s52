@@ -4,7 +4,7 @@
 /*                        Designed and programmed by Duck-Yong Yoon in 2005.  */
 
 #include <math.h>
-#include "at89s52.h"                           // include AT89S52 definition file
+#include <at89s52.h>                           // include AT89S52 definition file
 #include "OK89S52.h"                           // include OK-89S52 kit function
 
 void LCD_s3d(int number)
