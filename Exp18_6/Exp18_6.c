@@ -6,8 +6,8 @@
 #include <at89s52.h>                           // include AT89S52 definition file
 #include "OK89S52.h"                           // include OK-89S52 kit function
 
-unsigned char Mul_8bit(unsigned char i, unsigned char j);
-void Delay_1sec(void);
+extern unsigned char Mul_8bit(unsigned char i, unsigned char j);
+extern void Delay_1sec(void);
 
 void LCD_2d(unsigned char number)
 {                                              /* display 2-digit decimal number */
