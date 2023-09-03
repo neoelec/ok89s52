@@ -6,7 +6,7 @@
 #include "AT89S52.H"                           // include AT89S52 definition file
 #include "OK89S52.H"                           // include OK-89S52 kit function
 
-LCD_2hex(unsigned char number)
+void LCD_2hex(unsigned char number)
 {                                              /* display 2-digit hex number */
   unsigned char i;
 
@@ -23,7 +23,7 @@ LCD_2hex(unsigned char number)
     LCD_data(i - 10 + 'A');
 }
 
-LCD_3d(unsigned int number)
+void LCD_3d(unsigned int number)
 {                                              /* display 3-digit decimal number */
   unsigned char i, flag;
 
@@ -97,14 +97,14 @@ unsigned char Bin2LED(unsigned char number)
 
 unsigned char pattern[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };  // 7-segment LED pattern data
 
-LED_2hex(unsigned char number)
+void LED_2hex(unsigned char number)
 {                                              /* display 2-digit hex number */
   pattern[0] = Bin2LED(number >> 4);           // 16^1
   pattern[1] = Bin2LED(number & 0x0F);         // 16^0
   pattern[2] = Bin2LED('H');
 }
 
-LED_3d(unsigned int number)
+void LED_3d(unsigned int number)
 {                                              /* display 3-digit decimal number */
   unsigned char i, flag;
 
@@ -130,7 +130,7 @@ LED_3d(unsigned int number)
   pattern[7] = Bin2LED(i);
 }
 
-main()
+void main(void)
 {
   unsigned char i, j, k, digit;
 

@@ -6,7 +6,7 @@
 #include "AT89S52.H"                           // include AT89S52 definition file
 #include "OK89S52.H"                           // include OK-89S52 kit function
 
-LCD_2hex(unsigned char number)
+void LCD_2hex(unsigned char number)
 {                                              /* display HEX number xxH */
   unsigned char i;
 
@@ -23,7 +23,7 @@ LCD_2hex(unsigned char number)
     LCD_data(i - 10 + 'A');
 }
 
-LCD_s2d1(unsigned char number)
+void LCD_s2d1(unsigned char number)
 {                                              /* display signed real number +xx.x */
   unsigned char i;
   unsigned int j;
@@ -51,7 +51,7 @@ LCD_s2d1(unsigned char number)
   LCD_data(i % 10 + '0');                      // 10^-1
 }
 
-main()
+void main(void)
 {
   unsigned char volt;
 

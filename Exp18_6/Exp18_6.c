@@ -9,7 +9,7 @@
 unsigned char Mul_8bit(unsigned char i, unsigned char j);
 void Delay_1sec(void);
 
-LCD_2d(unsigned char number)
+void LCD_2d(unsigned char number)
 {                                              /* display 2-digit decimal number */
   unsigned char i;
 
@@ -23,7 +23,7 @@ LCD_2d(unsigned char number)
   LCD_data(i + '0');
 }
 
-main()
+void main(void)
 {
   unsigned int i, j, k;
 

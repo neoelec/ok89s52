@@ -6,7 +6,7 @@
 #include "AT89S52.H"                           // include AT89S52 definition file
 #include "OK89S52.H"                           // include OK-89S52 kit function
 
-Timer0_ms(unsigned int ms)
+void Timer0_ms(unsigned int ms)
 {                                              /* time delay for ms[ms] */
   unsigned i, time;
 
@@ -26,7 +26,7 @@ Timer0_ms(unsigned int ms)
   }
 }
 
-main()
+void main(void)
 {
   unsigned char mode, LED;
 

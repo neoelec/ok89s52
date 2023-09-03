@@ -20,7 +20,7 @@ void TF2_ISR(void) interrupt 5                 // Timer 2 interrupt function
   }
 }
 
-main()
+void main(void)
 {
   Kit_initialize();                            // initialize OK-89S52 kit
   Delay_ms(50);                                // wait for system stabilization

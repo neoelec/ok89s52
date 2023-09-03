@@ -8,14 +8,14 @@
 
 unsigned char cursor;                          // LCD cursor position
 
-TXD_char(unsigned char character)
+void TXD_char(unsigned char character)
 {                                              /* transmit a character */
   while (!TI) ;                                // transmit ready ?
   TI = 0;                                      // if yes, TI=0
   SBUF = character;                            //      and transmit a character
 }
 
-TXD_string(char *string)
+void TXD_string(char *string)
 {                                              /* transmit a string */
   while (*string != '\0') {
     TXD_char(*string);
@@ -37,7 +37,7 @@ void TIRI_ISR(void) interrupt 4                /* serial int. service routine */
   }
 }
 
-main()
+void main(void)
 {
   Kit_initialize();                            // initialize OK-89S52 kit
   Delay_ms(50);                                // wait for system stabilization

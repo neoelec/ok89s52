@@ -17,7 +17,7 @@ void INT0_ISR(void) interrupt 0                // -INT0 interrupt function
   }
 }
 
-main()
+void main(void)
 {
   Kit_initialize();                            // initialize OK-89S52 kit
   Delay_ms(50);                                // wait for system stabilization

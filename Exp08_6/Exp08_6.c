@@ -7,7 +7,7 @@
 #include "AT89S52.H"                           // include AT89S52 definition file
 #include "OK89S52.H"                           // include OK-89S52 kit function
 
-LCD_s3d(int number)
+void LCD_s3d(int number)
 {                                              /* display signed decimal number +xxx */
   signed int i;
   unsigned char flag;
@@ -40,7 +40,7 @@ LCD_s3d(int number)
   LCD_data(i + '0');
 }
 
-LCD_s1d3(float number)
+void LCD_s1d3(float number)
 {                                              /* display signed real number +x.xxx */
   unsigned int i, j;
 
@@ -68,7 +68,7 @@ LCD_s1d3(float number)
   LCD_data(i + '0');
 }
 
-main()
+void main(void)
 {
   signed int i;
   float x;

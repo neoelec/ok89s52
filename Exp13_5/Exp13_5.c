@@ -9,7 +9,7 @@
 unsigned int time;                             // time = second * 100
 unsigned char run_flag;                        // stop watch operation flag
 
-LCD_3d2(unsigned int number)
+void LCD_3d2(unsigned int number)
 {                                              /* display time xxx.xx */
   unsigned char i, flag;
 
@@ -54,7 +54,7 @@ void TF0_ISR(void) interrupt 1                 /* Timer 0 int. service routine *
   LCD_3d2(time);
 }
 
-main()
+void main(void)
 {
   Kit_initialize();                            // initialize OK-89S52 kit
   Delay_ms(50);                                // wait for system stabilization

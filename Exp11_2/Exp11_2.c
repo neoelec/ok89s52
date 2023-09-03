@@ -52,7 +52,7 @@ unsigned char Bin2LED(unsigned char number)
     return 0x00;
 }
 
-main()
+void main(void)
 {
   unsigned char i, j, digit;
 

@@ -11,14 +11,14 @@
 #define LCD_WR_INST (*(unsigned char xdata *)0x8300)  /* LCD module */
 #define LCD_WR_DATA (*(unsigned char xdata *)0x8301)
 
-Kit_initialize()
+void Kit_initialize(void)
 {                                              /* initialize OK-89S52 kit */
   P3_5 = 1;                                    // buzzer off
   SEG_PATTERN = 0x00;                          // clear 7-segment LED
   DIG_SELECT = 0x00;
 }
 
-Delay_us(unsigned char us)
+void Delay_us(unsigned char us)
 {                                              /* time delay for us[us] */
   unsigned char i;
 
@@ -26,7 +26,7 @@ Delay_us(unsigned char us)
   for (i = 1; i <= us; i++) ;
 }
 
-Delay_ms(unsigned int ms)
+void Delay_ms(unsigned int ms)
 {                                              /* time delay for ms[ms] */
   unsigned int i, j;
 
@@ -34,26 +34,26 @@ Delay_ms(unsigned int ms)
     for (j = 1; j <= 250; j++) ;
 }
 
-Beep()
+void Beep(void)
 {                                              /* beep sound for 50 ms */
   P3_5 = 0;
   Delay_ms(50);
   P3_5 = 1;
 }
 
-LCD_command(char command)
+void LCD_command(char command)
 {                                              /* write a command on text LCD */
   LCD_WR_INST = command;
   Delay_us(50);
 }
 
-LCD_data(char character)
+void LCD_data(char character)
 {                                              /* display a character on text LCD */
   LCD_WR_DATA = character;
   Delay_us(50);
 }
 
-LCD_string(char command, char *string)
+void LCD_string(char command, char *string)
 {                                              /* display a string on text LCD */
   LCD_command(command);
   while (*string != '\0') {
@@ -62,7 +62,7 @@ LCD_string(char command, char *string)
   }
 }
 
-LCD_initialize()
+void LCD_initialize(void)
 {                                              /* initialize text LCD module */
   LCD_command(0x38);                           // function set(8 bit, 2 line, 5x7 dot)
   LCD_command(0x0C);                           // display control(display ON, cursor OFF)
@@ -71,7 +71,7 @@ LCD_initialize()
   Delay_ms(2);
 }
 
-main()
+void main(void)
 {
   Kit_initialize();                            // initialize OK-89S52 kit
   Delay_ms(50);                                // wait for system stabilization

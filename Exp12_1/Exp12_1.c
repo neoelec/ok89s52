@@ -78,7 +78,7 @@
 
 unsigned char tempo;
 
-Play_note(unsigned int sound, unsigned int note)
+void Play_note(unsigned int sound, unsigned int note)
 {                                              /* play note */
   if (sound == RCAP2H * 256 + RCAP2L)          // if same note, cut shortly
     Delay_ms(1);
@@ -93,12 +93,12 @@ Play_note(unsigned int sound, unsigned int note)
   T2MOD = 0x00;                                // speaker off(T2OE=0)
 }
 
-Play_rest(unsigned int rest)
+void Play_rest(unsigned int rest)
 {                                              /* play rest */
   Delay_ms(rest * tempo * 7);                  // rest play time
 }
 
-main()
+void main(void)
 {
   Kit_initialize();                            // initialize OK-89S52 kit
   Delay_ms(50);                                // wait for system stabilization

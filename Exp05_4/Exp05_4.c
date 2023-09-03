@@ -6,7 +6,7 @@
 #include "AT89S52.H"                           // include AT89S52 definition file
 #include "OK89S52.H"                           // include OK-89S52 kit function
 
-LCD_1d1(float number)
+void LCD_1d1(float number)
 {                                              /* display floating point number x.x */
   unsigned char i, j;
 
@@ -18,7 +18,7 @@ LCD_1d1(float number)
   LCD_data(i + '0');
 }
 
-main()
+void main(void)
 {
   unsigned char i;
   unsigned int sum;

@@ -14,7 +14,7 @@ unsigned char minute;                          // minute
 unsigned char hour;                            // hour
 unsigned char ampm;                            // AM='A', PM='P'
 
-LCD_2d(unsigned char number)
+void LCD_2d(unsigned char number)
 {                                              /* display time xx */
   LCD_data(number / 10 + '0');                 // 10^1
   LCD_data(number % 10 + '0');                 // 10^0
@@ -67,7 +67,7 @@ void TF2_ISR(void) interrupt 5                 /* Timer 2 int. service routine *
   LCD_command(cursor);
 }
 
-Cursor_left()
+void Cursor_left(void)
 {                                              /* go cursor left */
   if (cursor == 0xC2)
     cursor = 0xCF;
@@ -78,7 +78,7 @@ Cursor_left()
   LCD_command(cursor);
 }
 
-Cursor_right()
+void Cursor_right(void)
 {                                              /* go cursor right */
   if (cursor == 0xCF)
     cursor = 0xC2;
@@ -89,7 +89,7 @@ Cursor_right()
   LCD_command(cursor);
 }
 
-Increment()
+void Increment(void)
 {                                              /* increment time */
   switch (cursor) {
   case 0xC2:
@@ -130,7 +130,7 @@ Increment()
   }
 }
 
-Decrement()
+void Decrement(void)
 {                                              /* decrement time */
   switch (cursor) {
   case 0xC3:
@@ -171,7 +171,7 @@ Decrement()
   }
 }
 
-main()
+void main(void)
 {
   Kit_initialize();                            // initialize OK-89S52 kit
   Delay_ms(50);                                // wait for system stabilization

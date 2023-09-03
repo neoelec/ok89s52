@@ -16,7 +16,7 @@ unsigned char second;                          // second
 unsigned char old_second;                      // old second
 unsigned char blink;                           //
 
-LCD_2BCD(unsigned char number)
+void LCD_2BCD(unsigned char number)
 {                                              /* display 2-digit BCD number */
   unsigned char i;
 
@@ -27,7 +27,7 @@ LCD_2BCD(unsigned char number)
   LCD_data(i + '0');
 }
 
-DSP_RTC()
+void DSP_RTC(void)
 {                                              /* display clock from RTC */
   unsigned char weekday;
 
@@ -136,7 +136,7 @@ unsigned char Bin2LED(unsigned char number)
     return 0x00;
 }
 
-DSP_LED()
+void DSP_LED(void)
 {                                              /* display clock on LED */
   unsigned char i;
 
@@ -235,7 +235,7 @@ unsigned char BCD_decrement(unsigned char number)
   return i;
 }
 
-Cursor_left()
+void Cursor_left(void)
 {                                              /* go cursor left */
   if (cursor == 0xCF)
     cursor = 0xCC;
@@ -257,7 +257,7 @@ Cursor_left()
     cursor = 0xCF;
 }
 
-Cursor_right()
+void Cursor_right(void)
 {                                              /* go cursor right */
   if (cursor == 0xCF)
     cursor = 0x84;
@@ -279,7 +279,7 @@ Cursor_right()
     cursor = 0xCF;
 }
 
-Increment()
+void Increment(void)
 {                                              /* increment time */
   unsigned char year, month, date, weekday, hour, minute, second;
 
@@ -355,7 +355,7 @@ Increment()
   }
 }
 
-Decrement()
+void Decrement(void)
 {                                              /* decrement time */
   unsigned char year, month, date, weekday, hour, minute, second;
 
@@ -431,7 +431,7 @@ Decrement()
   }
 }
 
-main()
+void main(void)
 {
   Kit_initialize();                            // initialize OK-89S52 kit
   Delay_ms(50);                                // wait for system stabilization

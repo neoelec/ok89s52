@@ -30,7 +30,7 @@ void TF0_ISR(void) interrupt 1                 /* Timer 0 int. service routine *
   DAC_CS = tri_data[count];                    // output D/A data
 }
 
-main()
+void main(void)
 {
   Kit_initialize();                            // initialize OK-89S52 kit
   Delay_ms(50);                                // wait for system stabilization

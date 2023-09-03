@@ -6,7 +6,7 @@
 #include "AT89S52.H"                           // include AT89S52 definition file
 #include "OK89S52.H"                           // include OK-89S52 kit function
 
-LCD_3d(unsigned int number)
+void LCD_3d(unsigned int number)
 {                                              /* display 3-digit decimal number */
   unsigned char i, flag;
 
@@ -32,7 +32,7 @@ LCD_3d(unsigned int number)
   LCD_data(i + '0');
 }
 
-main()
+void main(void)
 {
   unsigned char i, j;
 

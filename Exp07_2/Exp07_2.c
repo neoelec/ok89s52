@@ -7,7 +7,7 @@
 #include "AT89S52.H"                           // include AT89S52 definition file
 #include "OK89S52.H"                           // include OK-89S52 kit function
 
-LCD_3d(unsigned char number)
+void LCD_3d(unsigned char number)
 {                                              /* unsigned 3-digit decimal number */
   unsigned char i, flag;
 
@@ -33,7 +33,7 @@ LCD_3d(unsigned char number)
   LCD_data(i + '0');
 }
 
-LCD_s3d(signed char number)
+void LCD_s3d(signed char number)
 {                                              /* signed 3-digit decimal number */
   unsigned char i, flag, absolute;
 
@@ -66,7 +66,7 @@ LCD_s3d(signed char number)
   LCD_data(i + '0');
 }
 
-Ucompare(unsigned char a, unsigned char b)
+void Ucompare(unsigned char a, unsigned char b)
 {                                              /* unsigned char compare */
   LCD_command(0xC3);                           // display first data
   LCD_3d(a);
@@ -82,7 +82,7 @@ Ucompare(unsigned char a, unsigned char b)
   Delay_ms(2000);
 }
 
-Compare(signed char a, signed char b)
+void Compare(signed char a, signed char b)
 {                                              /* signed char compare */
   LCD_command(0xC2);                           // display first data
   LCD_s3d(a);
@@ -98,7 +98,7 @@ Compare(signed char a, signed char b)
   Delay_ms(2000);
 }
 
-main()
+void main(void)
 {
   Kit_initialize();                            // initialize OK-89S52 kit
   Delay_ms(50);                                // wait for system stabilization

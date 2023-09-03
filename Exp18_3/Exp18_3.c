@@ -8,7 +8,7 @@
 
 unsigned char LED;
 
-main()
+void main(void)
 {
   unsigned char i;
 

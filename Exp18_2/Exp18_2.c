@@ -9,7 +9,7 @@
 #define LED1 (*(unsigned char data *)0x30)     // internal SRAM address
 #define LED2 (*(unsigned char data *)0x31)
 
-main()
+void main(void)
 {
   Kit_initialize();                            // initialize OK-89S52 kit
   Delay_ms(50);                                // wait for system stabilization

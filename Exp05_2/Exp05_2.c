@@ -6,7 +6,7 @@
 #include "AT89S52.H"                           // include AT89S52 definition file
 #include "OK89S52.H"                           // include OK-89S52 kit function
 
-Set_font()
+void Set_font(void)
 {                                              /* set user character font */
   unsigned char i;
   unsigned char code font[] = {
@@ -25,7 +25,7 @@ Set_font()
     LCD_data(font[i]);
 }
 
-main()
+void main(void)
 {
   Kit_initialize();                            // initialize OK-89S52 kit
   Delay_ms(50);                                // wait for system stabilization

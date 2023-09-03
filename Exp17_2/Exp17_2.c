@@ -19,7 +19,7 @@ unsigned char code sin_data[100] = {           // sinusoidal wave data table
   0x35, 0x3C, 0x43, 0x4A, 0x51, 0x59, 0x60, 0x68, 0x70, 0x78
 };
 
-main()
+void main(void)
 {
   unsigned char i;
 

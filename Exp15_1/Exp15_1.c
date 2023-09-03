@@ -8,14 +8,14 @@
 
 unsigned char cursor;                          /* LCD cursor position */
 
-TXD_char(unsigned char character)
+void TXD_char(unsigned char character)
 {                                              /* transmit a character */
   while (!TI) ;                                // transmit ready ?
   TI = 0;                                      // if yes, TI=0
   SBUF = character;                            //      and transmit a character
 }
 
-TXD_string(char *string)
+void TXD_string(char *string)
 {                                              /* transmit a string */
   while (*string != '\0') {
     TXD_char(*string);
@@ -23,7 +23,7 @@ TXD_string(char *string)
   }
 }
 
-RXD_char()
+void RXD_char(void)
 {                                              /* receive a character */
   if (RI) {                                    // receive ready ?
     LCD_data(SBUF);                            // if yes, receive and RI=0
@@ -37,7 +37,7 @@ RXD_char()
   }
 }
 
-main()
+void main(void)
 {
   Kit_initialize();                            // initialize OK-89S52 kit
   Delay_ms(50);                                // wait for system stabilization

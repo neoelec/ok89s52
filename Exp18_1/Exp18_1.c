@@ -8,7 +8,7 @@
 #include "AT89S52.H"                           // include AT89S52 definition file
 #include "OK89S52.H"                           // include OK-89S52 kit function
 
-LCD_5d(unsigned int number)
+void LCD_5d(unsigned int number)
 {                                              /* display 5-digit decimal number */
   unsigned char flag, i;
 
@@ -52,7 +52,7 @@ LCD_5d(unsigned int number)
   LCD_data(i + '0');
 }
 
-main()
+void main(void)
 {
   unsigned int i, j, time;
   float x, y;

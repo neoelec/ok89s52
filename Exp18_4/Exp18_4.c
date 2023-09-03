@@ -8,7 +8,7 @@
 #define SEG_PATTERN (*(unsigned char xdata *)0x8100)
 #define DIG_SELECT (*(unsigned char xdata *)0x8200)
 
-Delay_ms(unsigned int ms)
+void Delay_ms(unsigned int ms)
 {                                              /* time delay for ms[ms] */
   unsigned int i, j;
 
@@ -16,14 +16,14 @@ Delay_ms(unsigned int ms)
     for (j = 1; j <= 250; j++) ;
 }
 
-Beep()
+void Beep(void)
 {                                              /* beep sound for 50 ms */
   P3_5 = 0;
   Delay_ms(50);
   P3_5 = 1;
 }
 
-main()
+void main(void)
 {                                              /* main function */
   unsigned char i, LED;
 

@@ -13,7 +13,7 @@ unsigned char minute;                          // minute
 unsigned char hour;                            // hour
 unsigned char ampm;                            // AM='A', PM='P'
 
-LCD_2d(unsigned char number)
+void LCD_2d(unsigned char number)
 {                                              /* display time xx */
   LCD_data(number / 10 + '0');                 // 10^1
   LCD_data(number % 10 + '0');                 // 10^0
@@ -64,7 +64,7 @@ void TF2_ISR(void) interrupt 5                 /* Timer 2 int. service routine *
   LCD_data(ampm);
 }
 
-main()
+void main(void)
 {
   Kit_initialize();                            // initialize OK-89S52 kit
   Delay_ms(50);                                // wait for system stabilization

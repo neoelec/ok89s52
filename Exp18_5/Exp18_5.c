@@ -6,7 +6,7 @@
 #include "AT89S52.H"                           // include AT89S52 definition file
 #include "OK89S52.H"                           // include OK-89S52 kit function
 
-LCD_2d(unsigned char number)
+void LCD_2d(unsigned char number)
 {                                              /* display 2-digit decimal number */
   unsigned char i;
 
@@ -20,7 +20,7 @@ LCD_2d(unsigned char number)
   LCD_data(i + '0');
 }
 
-main()
+void main(void)
 {
   unsigned int i, j, k;
 

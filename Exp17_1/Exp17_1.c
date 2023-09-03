@@ -19,7 +19,7 @@ unsigned char code tri_data[100] = {           // triangular wave data table
   0x58, 0x5C, 0x60, 0x64, 0x68, 0x6C, 0x70, 0x74, 0x78, 0x7C
 };
 
-main()
+void main(void)
 {
   unsigned char i;
 

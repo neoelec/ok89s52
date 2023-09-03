@@ -6,7 +6,7 @@
 #include "AT89S52.H"                           // include AT89S52 definition file
 #include "OK89S52.H"                           // include OK-89S52 kit function
 
-LCD_8bin(unsigned char number)
+void LCD_8bin(unsigned char number)
 {                                              /* display 8-bit binary number */
   LCD_data(((number >> 7) & 0x01) + '0');      // 2^7
   LCD_data(((number >> 6) & 0x01) + '0');      // 2^6
@@ -18,7 +18,7 @@ LCD_8bin(unsigned char number)
   LCD_data((number & 0x01) + '0');             // 2^0
 }
 
-main()
+void main(void)
 {
   unsigned char x, LED;
 
