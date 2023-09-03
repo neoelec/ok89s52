@@ -10,11 +10,11 @@ void Delay_us(unsigned char us);
 
 char putchar(char c)
 {
-  if(c == '\n')				// if CR, return
-    return(c);
+  if (c == '\n')                               // if CR, return
+    return (c);
 
-  LCD_WR_DATA = c;			// output c
+  LCD_WR_DATA = c;                             // output c
   Delay_us(50);
 
-  return(c);
+  return (c);
 }
