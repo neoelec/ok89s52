@@ -23,23 +23,23 @@ void main(void)
   while (1) {
     LED = 0x01;
     for (i = 1; i <= 4; i++) {                 // LED from 1 to 4
-#pragma asm
-      LED_CS EQU 8200H			; LED4-LED1 output address
+__asm
+      LED_CS = 0x8200     ; LED4-LED1 output address
       MOV    DPTR,#LED_CS
-      MOV    A,LED				; LED is global variable
+      MOV    A,_LED       ; LED is global variable
       MOVX   @DPTR,A
-#pragma endasm
+__endasm;
       Delay_ms(300);
       LED <<= 1;
     }
 
     LED = 0x08;
     for (i = 1; i <= 4; i++) {                 // LED from 4 to 1
-#pragma asm
+__asm
       MOV    DPTR,#LED_CS
-      MOV    A,LED				; LED is global variable
+      MOV    A,_LED       ; LED is global variable
       MOVX   @DPTR,A
-#pragma endasm
+__endasm;
       Delay_ms(300);
       LED >>= 1;
     }
