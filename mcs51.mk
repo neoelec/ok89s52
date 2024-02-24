@@ -1,7 +1,7 @@
 # Hey Emacs, this is a -*- makefile -*-
 
-USE_PAULMON	:= y
-PROJECT_PATH	:= $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
+MCS51_MK_FILE	:= $(realpath $(lastword $(MAKEFILE_LIST)))
+MCS51_PATH	:= $(shell dirname $(MCS51_MK_FILE))
 
 # MCU name.
 #   mcs51   : the Intel MCS51 family of processors
@@ -21,7 +21,7 @@ PROJECT_PATH	:= $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 #   pdk15   : the Padauk processor with 15 bit wide program memory
 #   pic14   : the Microchip PIC 14-bit processors (in development, not complete)
 #   pic16   : the Microchip PIC 16-bit processors (in development, not complete)
-MCU		:= mcs51
+MCU		?= mcs51
 
 # Assembler MCU name.
 #   390     :
@@ -32,10 +32,10 @@ MCU		:= mcs51
 #   rab     :
 #   stm8    :
 #   tlcs90  ;
-ASMCU		:= 8051
+ASMCU		?= 8051
 
 # Processor frequency.
-F_CPU		:= 24000000
+F_CPU		?= 24000000
 
 
 # Output FORMAT.
@@ -50,7 +50,7 @@ FORMAT		:= ihx
 
 
 # VPATH variable
-VPATH		+= $(PROJECT_PATH)
+VPATH		+= $(MCS51_PATH)
 
 
 # Define all C sorce files.
@@ -59,9 +59,6 @@ CSRCS		+=
 
 # Define all Assembler source files.
 ASRCS		+=
-ifeq ($(USE_PAULMON),y)
-ASRCS		+= PAULMON.asm
-endif
 
 
 # Define TTY Device.
@@ -74,17 +71,12 @@ OBJDIR		:= obj
 
 
 # Optimization options here.
-OPT		:= --opt-code-size
+OPT		?= --opt-code-size
 
 
 # List any extra directories to look for include files here.
-EXTRAINCDIRS	?= $(PROJECT_PATH)
-EXTRAINCDIRS	:= $(PROJECT_PATH)
-ifeq ($(USE_PAULMON),y)
-EXTRAINCDIRS	+= $(PROJECT_PATH)/Inc_w_PAULMON
-else
-EXTRAINCDIRS	+= $(PROJECT_PATH)/Inc_wo_PAULMON
-endif
+EXTRAINCDIRS	+= $(MCS51_PATH)
+
 
 # Compiler flag to set the C Standard level.
 #   sdcc89  : ISO C90 and ANSI C89 + SDCC behaviour
@@ -124,19 +116,11 @@ ASFLAGS		+= $(patsubst %,-I%,$(EXTRAINCDIRS))
 
 
 # The start location of the external ram, default value is 0.
-ifeq ($(USE_PAULMON),y)
-XRAM_LOC	:= --xram-loc 0x4000
-else
-XRAM_LOC	:=
-endif
+XRAM_LOC	?=
 
 
 # The start location of the code segment, default value is 0.
-ifeq ($(USE_PAULMON),y)
-CODE_LOC	:= --code-loc 0x2000
-else
-CODE_LOC	:=
-endif
+CODE_LOC	?=
 
 
 LDFLAGS		+= --out-fmt-$(FORMAT) $(OPT)
