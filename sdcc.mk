@@ -1,7 +1,5 @@
-# Hey Emacs, this is a -*- makefile -*-
-
-MCS51_MK_FILE		:= $(realpath $(lastword $(MAKEFILE_LIST)))
-MCS51_PATH		:= $(shell dirname $(MCS51_MK_FILE))
+SDCC_MK_FILE		:= $(realpath $(lastword $(MAKEFILE_LIST)))
+SDCC_PATH		:= $(shell dirname $(SDCC_MK_FILE))
 
 # MCU name.
 #   mcs51   : the Intel MCS51 family of processors
@@ -26,31 +24,64 @@ MCS51_PATH		:= $(shell dirname $(MCS51_MK_FILE))
 #   mos65c02: the CMOS Rockwell/WDC 65C02
 MCU			?= mcs51
 
-# Assembler MCU name.
-#   390     :
-#   6808    :
-#   8051    :
-#   gb      :
-#   pdk13   :
-#   pdk14   :
-#   pdk15   :
-#   rab     :
-#   stm8    :
-#   tlcs90  :
-#   z80     :
-ASMCU			?= 8051
-
 # Processor frequency.
 F_CPU			?= 24000000
 
-# Output FORMAT.
-#   ihx : Intel Hex FORMAT
-#   s19 : Motorola S19 FORMAT
-#   elf : ELF FORMAT
-FORMAT			?= ihx
+# The start location of the external ram, default value is 0.
+XRAM_LOC		?=
+
+# The start location of the code segment, default value is 0.
+CODE_LOC		?=
 
 # Target file name
 TARGET			?=
+
+# Output directories
+BINDIR			?= bin
+OBJDIR			?= obj
+
+# Define output file
+OUTPUT			?= $(addprefix $(BINDIR)/, $(TARGET))
+
+# Optimization options here.
+#   code-speed
+#   code-size
+OPT			?= code-size
+
+# Compiler flag to set the C Standard level.
+#   c89    : ISO C90 (aka ANSI C89) standard
+#   c95    : ISO C95 (aka ISO C94) standard
+#   c99    : ISO C99 standard
+#   c11    : ISO C11 standard
+#   c17    : ISO C17 standard
+#   c23    : ISO C23 standard
+#   sdcc89 : ISO C90 (aka ANSI C89) standard with SDCC extensions
+#   sdcc99 : ISO C99 standard with SDCC extensions
+#   sdcc11 : ISO C11 standard with SDCC extensions (default)
+#   sdcc11 : ISO C17 standard with SDCC extensions
+#   sdcc23 : ISO C23 standard with SDCC extensions
+CSTANDARD		?= sdcc11
+
+# Assembler MCU name.
+ASMCU_mcs51		:= 8051
+ASMCU_ds390		:= 390
+ASMCU_ds400		:= 390
+ASMCU_hc08		:= 6808
+ASMCU_s08		:= 6808
+ASMCU_z80		:= z80
+ASMCU_z180		:= z80
+ASMCU_r2k		:= rab
+ASMCU_r3ka		:= rab
+ASMCU_sm83		:= gb
+ASMCU_tlcs90		:= tlcs90
+ASMCU_ez80_z80		:= z80
+ASMCU_stm8		:= stm8
+ASMCU_pdk13		:= pdk13
+ASMCU_pdk14		:= pdk14
+ASMCU_pdk15		:= pdk15
+ASMCU_pic14		:=
+ASMCU_pic16		:=
+ASMCU_mos6502		:= 6500
 
 # VPATH variable
 VPATH			+=
@@ -61,44 +92,20 @@ CSRCS			+=
 # Define all Assembler source files.
 ASRCS			+=
 
-# Output directories
-BINDIR			:= bin
-OBJDIR			:= obj
-
-# Optimization options here.
-OPT			?= --opt-code-size
-
 # List any extra directories to look for include files here.
 EXTRAINCDIRS		+=
 
-# Compiler flag to set the C Standard level.
-#   c89    : ISO C90 (aka ANSI C89) standard (slightly incomplete)
-#   sdcc89 : ISO C90 (aka ANSI C89) standard with SDCC extensions
-#   c95    : ISO C95 (aka ISO C94) standard (slightly incomplete)
-#   c99    : ISO C99 standard (incomplete)
-#   sdcc99 : ISO C99 standard with SDCC extensions
-#   c11    : ISO C11 standard (incomplete)
-#   sdcc11 : ISO C11 standard with SDCC extensions (default)
-#   c2x    : ISO C2X standard (incomplete)
-#   sdcc2x : ISO C2X standard with SDCC extensions
-CSTANDARD		:= sdcc11
-
 # Place -I options here
 CINCS			+=
-
-# MCU specific options here.
-MCU_CFLAGS		+=
-MCU_LDFLAGS		+=
 
 # Place -D or -U options here
 CDEFS			+= -DF_CPU=$(F_CPU)UL
 
 # Compiler Options
-CFLAGS			+= $(CDEFS) -m$(MCU) $(OPT) --std-$(CSTANDARD)
+CFLAGS			+= $(CDEFS) -m$(MCU) --opt-$(OPT) --std-$(CSTANDARD)
 CFLAGS			+= --debug
 CFLAGS			+= $(CINCS)
 CFLAGS			+= $(patsubst %,-I%,$(EXTRAINCDIRS))
-CFLAGS			+= $(MCU_CFLAGS)
 CFLAGS			+= --verbose
 
 # Assembler Options
@@ -106,34 +113,27 @@ ASFLAGS			+= -x -l -s
 ASFLAGS			+= -j -y
 ASFLAGS			+= $(patsubst %,-I%,$(EXTRAINCDIRS))
 
-# The start location of the external ram, default value is 0.
-XRAM_LOC		?=
-
-# The start location of the code segment, default value is 0.
-CODE_LOC		?=
-
-LDFLAGS			+= --out-fmt-$(FORMAT) $(OPT)
+# Linker Options
+LDFLAGS			+= --out-fmt-ihx --opt-$(OPT)
 LDFLAGS			+= --debug
 LDFLAGS			+= $(XRAM_LOC)
 LDFLAGS			+= $(CODE_LOC)
-LDFLAGS			+= $(MCU_LDFLAGS)
 LDFLAGS			+= --verbose
 
 # Define programs and commands.
 CC			:= sdcc
-AS			:= sdas$(ASMCU)
+AS			:= sdas$(ASMCU_$(MCU))
 REMOVE			:= rm -rf
+COPY			:= cp
 
 # Define all object files.
 COBJS			:= $(addprefix $(OBJDIR)/, $(CSRCS:.c=.rel))
 AOBJS			:= $(addprefix $(OBJDIR)/, $(ASRCS:.asm=.rel))
 
-# Define output file
-OUTPUT			:= $(addprefix $(BINDIR)/, $(TARGET).$(FORMAT))
-
 # Define Messages
-MSG_BEGIN		:= -------- begin --------
-MSG_END			:= --------  end  --------
+MSG_SIZE_BEFORE		:= Size before:
+MSG_SIZE_AFTER		:= Size after:
+MSG_FLASH		:= Creating load file for Flash:
 MSG_LINKING		:= Linking:
 MSG_COMPILING		:= Compiling:
 MSG_ASSEMBLING		:= Assembling:
@@ -141,48 +141,69 @@ MSG_CLEANING		:= Cleaning project:
 
 # Combine all necessary flags and optional flags.
 # Add target processor to flags.
-ALL_CFLAGS		:= -I. $(CFLAGS)
-ALL_ASFLAGS		:= -I. $(ASFLAGS)
+ALL_CFLAGS		:= $(CFLAGS)
+ALL_ASFLAGS		:= $(ASFLAGS)
 
 all: build
 
-build: sdcc-version begin $(BINDIR) $(OBJDIR) $(OUTPUT) end
+build: sdccversion sizebefore $(BINDIR) $(OBJDIR) output sizeafter
 
-sdcc-version:
+output: hex
+
+hex: $(OUTPUT).hex $(OUTPUT).bin
+
+sdccversion:
 	$(CC) --version
 
-begin:
-	@echo
-	@echo $(MSG_BEGIN)
-
-end:
-	@echo
-	@echo $(MSG_END)
-	@echo
-
 $(BINDIR) $(OBJDIR):
-	@mkdir $@
+	@mkdir -p $@
 
-$(OUTPUT): $(COBJS) $(AOBJS)
+# Display size of file.
+sizebefore: | sdccversion
+	@if [ -f $(OUTPUT).mem ]; then \
+		echo; \
+		echo $(MSG_SIZE_BEFORE); \
+		cat $(OUTPUT).mem; \
+		echo; \
+	fi
+
+sizeafter: | output
+	@if [ -f $(OUTPUT).mem ]; then \
+		echo; \
+		echo $(MSG_SIZE_AFTER); \
+		cat $(OUTPUT).mem; \
+		echo; \
+	fi
+
+%.bin: %.ihx
+	@echo
+	@echo $(MSG_FLASH) "Binary"
+	srec_cat $< -Intel -o $@ -Binary
+
+%.hex: %.ihx
+	@echo
+	@echo $(MSG_FLASH) "Intel"
+	srec_cat $< -Intel -o $@ -Intel
+
+$(OUTPUT).ihx: $(COBJS) $(AOBJS) | $(BINDIR)
 	@echo
 	@echo $(MSG_LINKING)
 	$(CC) $(LDFLAGS) -o $@ $^
-	@cat $(@:.$(FORMAT)=.mem)
 
 # Compile: create object files from C source files.
-$(COBJS): $(OBJDIR)/%.rel: %.c
+$(COBJS): $(OBJDIR)/%.rel: %.c | $(OBJDIR)
 	@echo
 	@echo $(MSG_COMPILING)
 	$(CC) -c $(ALL_CFLAGS) -o $@ $<
 
 # Assemble: create object files from assembler source files
-$(AOBJS): $(OBJDIR)/%.rel: %.asm
+$(AOBJS): $(OBJDIR)/%.rel: %.asm | $(OBJDIR)
 	@echo
 	@echo $(MSG_ASSEMBLING) $<
 	$(AS) $(ALL_ASFLAGS) -o $@ $<
 
 # Target: clean project.
-clean: begin clean_list end
+clean: clean_list
 
 clean_list:
 	@echo
@@ -191,4 +212,6 @@ clean_list:
 	$(REMOVE) $(OBJDIR)
 
 # Listing of phony targets.
-.PHONY : clean begin all end sdcc-version
+.PHONY : all sizebefore sizeafter sdccversion \
+		build \
+		clean clean_list

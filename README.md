@@ -5,7 +5,7 @@
 
 ## TOOL 설치
 ```bash
-sudo apt install sdcc a31
+sudo apt install a31 minicom sdcc srecord
 ```
 
 ## 보드 개조
@@ -28,7 +28,7 @@ sudo apt install sdcc a31
 ## 사용 방법
 1. 터미널 에뮬레이터는 **19200n 8n1** 으로 설정
 1. PAULMON Shell에서 <code>d</code>입력해 다운로드 모드로 설정
-1. 각 예제 디렉토리에서 <code>make -j\`nproc\` upload</code> 명령을 입력해 iHEX파일을 생성하고 PAULMON으로 업로드
+1. 각 예제 디렉토리에서 <code>make -j\`nproc\` paulmon</code> 명령을 입력해 iHEX파일을 생성하고 PAULMON으로 업로드
 1. 업로드가 완료되면 PAULMON Shell에서 <code>j</code>입력해 실행
 
 ![PAULMON2.1-EXAMPLE](./images/paulmon_01.png)

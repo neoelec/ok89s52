@@ -3,8 +3,12 @@
 # Define TTY Device.
 TTY_DEV			?= /dev/ttyUSB0
 
-pm21_upload: build
-	@ascii-xfr -s -l 5 -c 5 $(OUTPUT) > $(TTY_DEV)
+MSG_PAULMON		:= Upload to PAULMON v2.1:
+
+paulmon: build
+	@echo
+	@echo $(MSG_PAULMON) $(OUTPUT).hex
+	@ascii-xfr -s -l 1 -c 1 $(OUTPUT).hex > $(TTY_DEV)
 
 # Listing of phony targets.
-.PHONY : pm21_upload
+.PHONY : paulmon
