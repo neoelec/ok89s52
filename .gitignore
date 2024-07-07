@@ -1,0 +1,6 @@
+*.bak
+*.patch
+*~
+.*.swp
+bin/
+obj/
